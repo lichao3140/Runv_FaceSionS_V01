@@ -1,5 +1,8 @@
 package com.runvision.bean;
 
+/**
+ * 考勤终端注册
+ */
 public class Device {
 
     private String inscode;//培训机构编号

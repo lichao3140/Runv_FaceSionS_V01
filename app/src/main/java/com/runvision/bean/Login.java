@@ -2,21 +2,21 @@ package com.runvision.bean;
 
 public class Login {
 
-    private long devnum;
+    private String devnum;
     private String username;
     private String passwd;
 
-    public Login(long devnum, String username, String passwd) {
+    public Login(String devnum, String username, String passwd) {
         this.devnum = devnum;
         this.username = username;
         this.passwd = passwd;
     }
 
-    public long getDevnum() {
+    public String getDevnum() {
         return devnum;
     }
 
-    public void setDevnum(long devnum) {
+    public void setDevnum(String devnum) {
         this.devnum = devnum;
     }
 
@@ -39,7 +39,7 @@ public class Login {
     @Override
     public String toString() {
         return "Login{" +
-                "devnum='" + devnum + '\'' +
+                "devnum=" + devnum +
                 ", username='" + username + '\'' +
                 ", passwd='" + passwd + '\'' +
                 '}';

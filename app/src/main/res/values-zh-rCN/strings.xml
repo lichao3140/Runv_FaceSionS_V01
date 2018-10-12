@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">驾校考勤</string>
+    <string name="login_username">用户名:</string>
+    <string name="login_password">密&#160;&#160;&#160;&#160;码:</string>
+    <string name="login_login">登&#160;&#160;&#160;&#160;录</string>
+    <string name="login_register">注&#160;&#160;&#160;&#160;册</string>
+    <string name="register_organ_no">培训机构编号:</string>
+    <string name="register_time_type">计时终端类型:</string>
+    <string name="register_manufacturer_factory">生产厂家:</string>
+    <string name="register_device_type">终端型号:</string>
+    <string name="register_mac_address">设备MAC地址:</string>
+    <string name="button_sure">确&#160;&#160;&#160;&#160;认</string>
+    <string name="button_cancel">取&#160;&#160;&#160;&#160;消</string>
+    <string name="toast_login_success">登录成功!</string>
+    <string name="toast_login_error">登录失败!</string>
+    <string name="toast_login_error_code">登录失败,错误码:</string>
+    <string name="toast_register_success">注册成功!</string>
+    <string name="toast_register_error">注册失败!</string>
+    <string name="toast_register_error_code">注册失败,错误码:</string>
+    <string name="toast_request_error">请求失败,请检测网络!</string>
+
+</resources>

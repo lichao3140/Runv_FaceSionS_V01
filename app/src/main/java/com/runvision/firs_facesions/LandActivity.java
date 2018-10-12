@@ -19,6 +19,7 @@ import com.runvision.bean.AppData;
 import com.runvision.bean.Device;
 import com.runvision.bean.DeviceResponse;
 import com.runvision.bean.Login;
+import com.runvision.bean.LoginResponse;
 import com.runvision.core.Const;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
@@ -60,10 +61,10 @@ public class LandActivity extends Activity implements View.OnClickListener {
     public MyCameraSuf myCameraView;
     public Location location;
     private SharedPreferencesHelper sharedPreferencesHelper;
-
-    private JsonTools mJsonTools = new JsonTools();
-
     private Context mContext;
+
+    Gson gson = new Gson();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +89,7 @@ public class LandActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onDestroy() {
-        super.onDestroy(); // Always call the superclass
+        super.onDestroy();
         android.os.Debug.stopMethodTracing();
         LocationUtils.getInstance(LandActivity.this).removeLocationUpdatesListener();
     }
@@ -125,6 +126,9 @@ public class LandActivity extends Activity implements View.OnClickListener {
         okbtn.setOnClickListener(this);
         cancelbtn.setOnClickListener(this);
 
+        et_user.setText("lichao");
+        et_password.setText("123");
+
         ed_mac.setText(MACUtil.getLocalMacAddressFromWifiInfo(mContext));
         ed_mechanism.setText("3225974581615749");
         ed_type.setText("1");
@@ -141,29 +145,14 @@ public class LandActivity extends Activity implements View.OnClickListener {
                 reg.setVisibility(View.VISIBLE);
                 break;
             case R.id.loginbtn:
-//                AppData.getAppData().setUser(et_user.getText().toString());
-//                AppData.getAppData().setPassword(et_password.getText().toString());
-//                String postdate1 = mJsonTools.parseJSONWithString(2);
-//                ToHttpThread mPostDateThread1 = new ToHttpThread(Const.LOGIN, postdate1);
-//                mPostDateThread1.start();
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                myCameraView.releaseCamera();
                 try {
                     login();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                Intent intent = new Intent(LandActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
                 break;
             case R.id.okbtn:
-//                Log.i("lichao", "url:" + Const.REGISTER + "ts=" + TimeUtils.getTime13());
-                regin();
+                deviceRegister();
                 break;
             case R.id.cancelbtn:
                 //返回登陆界面
@@ -175,19 +164,30 @@ public class LandActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 用户登录
+     * @throws Exception
+     */
     private void login () throws Exception {
-        // sign_str=devnum+username+passwd+ts加密后的字符串
         String privateKey = sharedPreferencesHelper.getSharedPreference("privateKey", "").toString().trim();
         String devnum = sharedPreferencesHelper.getSharedPreference("devnum", "").toString().trim();
         String username = et_user.getText().toString().trim();
         String passwd = et_password.getText().toString().trim();
-        String sign = Long.parseLong(devnum) + username + passwd + TimeUtils.getTime13();
-        byte[] ss = sign.toString().getBytes();
+        String ts = TimeUtils.getTime13();
+        // sign_str = devnum + username + passwd + ts加密后的字符串
+        String sign = devnum + username + passwd + ts;
+        byte[] ss = sign.getBytes();
         String sign_str = RSAUtils.sign(ss, privateKey);
-        Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
+
+//        Log.i("lichao", "privateKey:" + privateKey);
+//        Log.i("lichao", "devnum:" + devnum);
+//        Log.i("lichao", "sign:" + sign);
+        Log.i("lichao", "url:" + Const.LOGIN + "ts=" + ts + "&sign=" + sign_str);
+
         OkHttpUtils.postString()
-                .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
-                .content(new Gson().toJson(new Login(Long.parseLong(devnum),
+                .url(Const.LOGIN + "ts=" + ts + "&sign=" + sign_str)
+                .content(new Gson().toJson(new Login(
+                        devnum,
                         username,
                         passwd)))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
@@ -195,22 +195,34 @@ public class LandActivity extends Activity implements View.OnClickListener {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e("lichao", "faile:" + call.request().body().toString());
+                        Toasty.error(LandActivity.this, getString(R.string.toast_request_error), Toast.LENGTH_LONG, true).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.i("lichao", "success:" + response.toString());
+                        Log.i("lichao", "success:" + response);
+                        LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
+                        if (gsonLogin.getErrorcode() == 0) {
+                            Intent intent = new Intent(LandActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                            Toasty.success(LandActivity.this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                        } else {
+                            Toasty.error(LandActivity.this, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                        }
                     }
                 });
     }
 
-    private void regin() {
+    /**
+     * 考勤终端注册
+     */
+    private void deviceRegister() {
         OkHttpUtils.postString()
                 .url(Const.REGISTER + "ts=" + TimeUtils.getTime13())
                 .content(new Gson().toJson(new Device(
                         ed_mechanism.getText().toString().trim(),
-                        Integer.valueOf(ed_type.getText().toString()).intValue(),
+                        Integer.valueOf(ed_type.getText().toString()),
                         ed_manufactor.getText().toString().trim(),
                         ed_model.getText().toString().trim(),
                         "15|56",
@@ -220,22 +232,25 @@ public class LandActivity extends Activity implements View.OnClickListener {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e("lichao", "faile:" + call.request().body().toString());
-                        Toasty.error(LandActivity.this, "注册失败", Toast.LENGTH_SHORT, true).show();
+                        Toasty.error(LandActivity.this, getString(R.string.toast_request_error), Toast.LENGTH_LONG, true).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.i("lichao", "success:" + response.toString());
-                        Gson gson = new Gson();
-                        DeviceResponse gsonData = gson.fromJson(response.toString(), DeviceResponse.class);
-                        String privateKey = gsonData.getData().getPrivateKey();
-                        String devnum = String.valueOf(gsonData.getData().getDevnum());
-                        sharedPreferencesHelper.put("privateKey", privateKey);
-                        sharedPreferencesHelper.put("devnum",devnum);
-                        Toasty.success(LandActivity.this, "注册成功", Toast.LENGTH_SHORT, true).show();
+                        Log.i("lichao", "success:" + response);
+                        DeviceResponse gsonData = gson.fromJson(response, DeviceResponse.class);
+                        if (gsonData.getErrorcode() == 0) {
+                            String privateKey = gsonData.getData().getPrivateKey();
+                            String devnum = gsonData.getData().getDevnum();
+                            sharedPreferencesHelper.put("privateKey", privateKey);
+                            sharedPreferencesHelper.put("devnum",devnum);
+                            Toasty.success(LandActivity.this, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
+                        } else {
+                            Toasty.error(LandActivity.this, getString(R.string.toast_register_error_code) + gsonData.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                        }
                     }
                 });
-        //2.返回登陆界面（记录终端型号）
     }
+
+
 }

@@ -1,10 +1,13 @@
 package com.runvision.bean;
 
+/**
+ * 考勤终端注册应答
+ */
 public class DeviceResponse {
 
     private Data data; //附加信息
     private String message; //提示信息
-    private String errorcode; //返回码
+    private int errorcode; //返回码
 
     public void setData(Data data) {
         this.data = data;
@@ -22,11 +25,11 @@ public class DeviceResponse {
         return message;
     }
 
-    public void setErrorcode(String errorcode) {
+    public void setErrorcode(int errorcode) {
         this.errorcode = errorcode;
     }
 
-    public String getErrorcode() {
+    public int getErrorcode() {
         return errorcode;
     }
 
@@ -42,7 +45,7 @@ public class DeviceResponse {
 
     public class Data {
         private String privateKey; //RSA私钥
-        private long devnum; //终端编号
+        private String devnum; //终端编号
 
         public void setPrivateKey(String privateKey) {
             this.privateKey = privateKey;
@@ -52,11 +55,11 @@ public class DeviceResponse {
             return privateKey;
         }
 
-        public void setDevnum(long devnum) {
+        public void setDevnum(String devnum) {
             this.devnum = devnum;
         }
 
-        public long getDevnum() {
+        public String getDevnum() {
             return devnum;
         }
 

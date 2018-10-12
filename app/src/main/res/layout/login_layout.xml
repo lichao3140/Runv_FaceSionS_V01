@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/et_user"
         android:layout_toStartOf="@+id/et_user"
-        android:text="用户名："
+        android:text="@string/login_username"
         android:textSize="18sp"/>
 
     <EditText
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/et_password"
         android:layout_toStartOf="@+id/et_user2"
-        android:text="密码："
+        android:text="@string/login_password"
         android:textSize="18sp"/>
 
     <EditText
@@ -63,6 +63,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="83dp"
-        android:text="注册"/>
+        android:text="@string/login_register"/>
 
 </RelativeLayout>
