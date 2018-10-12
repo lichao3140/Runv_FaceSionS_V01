@@ -2,21 +2,21 @@ package com.runvision.bean;
 
 public class Login {
 
-    private String devnum;
+    private long devnum;
     private String username;
     private String passwd;
 
-    public Login(String devnum, String username, String passwd) {
+    public Login(long devnum, String username, String passwd) {
         this.devnum = devnum;
         this.username = username;
         this.passwd = passwd;
     }
 
-    public String getDevnum() {
+    public long getDevnum() {
         return devnum;
     }
 
-    public void setDevnum(String devnum) {
+    public void setDevnum(long devnum) {
         this.devnum = devnum;
     }
 

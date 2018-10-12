@@ -179,15 +179,17 @@ public class LandActivity extends Activity implements View.OnClickListener {
         // sign_str=devnum+username+passwd+ts加密后的字符串
         String privateKey = sharedPreferencesHelper.getSharedPreference("privateKey", "").toString().trim();
         String devnum = sharedPreferencesHelper.getSharedPreference("devnum", "").toString().trim();
-        String sign = devnum + et_user.getText().toString().trim() + et_password.getText().toString().trim() + TimeUtils.getTime13();
+        String username = et_user.getText().toString().trim();
+        String passwd = et_password.getText().toString().trim();
+        String sign = Long.parseLong(devnum) + username + passwd + TimeUtils.getTime13();
         byte[] ss = sign.toString().getBytes();
         String sign_str = RSAUtils.sign(ss, privateKey);
         Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
         OkHttpUtils.postString()
                 .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
-                .content(new Gson().toJson(new Login(devnum,
-                        et_user.getText().toString().trim(),
-                        et_password.getText().toString())))
+                .content(new Gson().toJson(new Login(Long.parseLong(devnum),
+                        username,
+                        passwd)))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .build()
                 .execute(new StringCallback() {

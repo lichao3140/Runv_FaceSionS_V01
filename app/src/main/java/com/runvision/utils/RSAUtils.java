@@ -440,6 +440,7 @@ public class RSAUtils {
 "tSlvmaTzqmeLYlFbH21UXhJBE9YxH4Rn1YsLZoMlC6JyHH40RYREmQiA2XmjjIpEN4C/ZH+892M2"+
 "tm8aiIC4W+F07tzrnUR27qPbsrcKA5yrcd5U+lwosZJR/ACrS4Ay/VldnQIDAQAB";
 
+          /*
           JSONObject json = new JSONObject();
           json.put("name", "xinqingsong");
           json.put("idCard", "3714855988860522");
@@ -457,7 +458,7 @@ public class RSAUtils {
           boolean su=verify(sss, pub, sign);
           
           System.out.println("验证签名是否正确："+su);
-    	
+    	*/
 	}
 
 }
