@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -168,8 +169,24 @@
             </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
+
+    <scut.carson_ho.kawaii_loadingview.Kawaii_LoadingView
+        android:id="@+id/Kawaii_LoadingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:blockColor="@color/gold"
+        app:lineNumber="3"
+        app:fixBlock_Angle="5"
+        app:moveBlock_Angle="20"
+        app:blockInterval="8dp"
+        app:half_BlockWidth="15dp"
+        app:initPosition="0"
+        app:isClock_Wise="false"
+        app:moveSpeed="500"
+        android:visibility="gone"
+        app:move_Interpolator="@android:anim/bounce_interpolator" />
 
     <LinearLayout
         android:id="@+id/service"
@@ -201,5 +218,4 @@
             android:textColor="@color/gray"
             android:textSize="14dp" />
     </LinearLayout>
-
 </RelativeLayout>

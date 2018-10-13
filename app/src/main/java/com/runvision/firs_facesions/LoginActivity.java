@@ -3,11 +3,8 @@ package com.runvision.firs_facesions;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +15,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,6 +74,8 @@ public class LoginActivity extends FragmentActivity {
     @BindView(R.id.root)
     RelativeLayout root;
 
+    private scut.carson_ho.kawaii_loadingview.Kawaii_LoadingView Kawaii_LoadingView;
+
     private int screenHeight = 0;//屏幕高度
     private int keyHeight = 0; //软件盘弹起后所占高度
     private float scale = 0.6f; //logo缩放比例
@@ -107,6 +105,7 @@ public class LoginActivity extends FragmentActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
+        Kawaii_LoadingView = findViewById(R.id.Kawaii_LoadingView);
         etUser.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -214,7 +213,14 @@ public class LoginActivity extends FragmentActivity {
                     etPassword.setSelection(pwd.length());
                 break;
             case R.id.btn_login:
-                login ();
+                Intent intentMain = new Intent(mContext, MainActivity.class);
+                startActivity(intentMain);
+                finish();
+//                Kawaii_LoadingView.setVisibility(View.VISIBLE);
+//                Kawaii_LoadingView.startMoving();
+//                login ();
+//                Kawaii_LoadingView.stopMoving();
+//                Kawaii_LoadingView.setVisibility(View.GONE);
                 break;
         }
     }
@@ -258,9 +264,9 @@ public class LoginActivity extends FragmentActivity {
                         if (!response.equals("resource/500")) {
                             LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                             if (gsonLogin.getErrorcode() == 0) {
-                                Intent intent = new Intent(mContext, MainActivity.class);
-                                startActivity(intent);
-                                finish();
+//                                Intent intent = new Intent(mContext, MainActivity.class);
+//                                startActivity(intent);
+//                                finish();
                                 Toasty.success(mContext, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
                             } else {
                                 Toasty.error(mContext, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();

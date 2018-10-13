@@ -1,30 +1,24 @@
 package com.runvision.firs_facesions;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.runvision.bean.Device;
 import com.runvision.bean.DeviceResponse;
 import com.runvision.core.Const;
-import com.runvision.myview.AndroidBug5497Workaround;
 import com.runvision.utils.LocationUtils;
 import com.runvision.utils.MACUtil;
 import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
