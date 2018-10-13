@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,16 +28,21 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-import com.runvision.myview.AndroidBug5497Workaround;
-import com.runvision.utils.LocationUtils;
+import com.runvision.bean.Login;
+import com.runvision.bean.LoginResponse;
+import com.runvision.core.Const;
+import com.runvision.utils.RSAUtils;
 import com.runvision.utils.SharedPreferencesHelper;
-
+import com.runvision.utils.TimeUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import okhttp3.Call;
+import okhttp3.MediaType;
 
 /**
  * Created by ChaoLi on 2018/10/13 0013 - 12:48
@@ -76,46 +82,27 @@ public class LoginActivity extends FragmentActivity {
     private int keyHeight = 0; //软件盘弹起后所占高度
     private float scale = 0.6f; //logo缩放比例
 
-    public Location location;
     private SharedPreferencesHelper sharedPreferencesHelper;
     private Context mContext;
+
+    Gson gson = new Gson();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isFullScreen(this)) {
-            AndroidBug5497Workaround.assistActivity(this);
-        }
-        // 隐藏下面的虚拟按键
-        hideBottomUIMenu();
         setContentView(R.layout.activity_login);
-
         ButterKnife.bind(this);
         screenHeight = this.getResources().getDisplayMetrics().heightPixels; //获取屏幕高度
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
         mContext = this;
-        location = LocationUtils.getInstance(mContext).showLocation();
-        if (location != null) {
-            String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
-            Log.i("lichao", "address:" + address);
-        }
+        sharedPreferencesHelper = new SharedPreferencesHelper(mContext, "deviceInfo");
         initListener();
+        initData();
     }
 
-    private void hideBottomUIMenu() {
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) {
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-    }
-
-    public boolean isFullScreen(Activity activity) {
-        return (activity.getWindow().getAttributes().flags &
-                WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+    private void initData() {
+        etUser.setText("lichao");
+        etPassword.setText("123");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -205,7 +192,8 @@ public class LoginActivity extends FragmentActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.regist:
-
+                Intent intent = new Intent(mContext, RegisterActivity.class);
+                startActivity(intent);
                 break;
             case R.id.iv_clean_user:
                 etUser.setText("");
@@ -226,9 +214,62 @@ public class LoginActivity extends FragmentActivity {
                     etPassword.setSelection(pwd.length());
                 break;
             case R.id.btn_login:
-
+                login ();
                 break;
         }
+    }
+
+    /**
+     * 用户登录
+     * @throws Exception
+     */
+    private void login () {
+        String privateKey = sharedPreferencesHelper.getSharedPreference("privateKey", "").toString().trim();
+        String devnum = sharedPreferencesHelper.getSharedPreference("devnum", "").toString().trim();
+        String username = etUser.getText().toString().trim();
+        String passwd = etPassword.getText().toString().trim();
+        String ts = TimeUtils.getTime13();
+        // sign_str = devnum + username + passwd + ts加密后的字符串
+        String sign = devnum + username + passwd + ts;
+        byte[] ss = sign.getBytes();
+        String sign_str = null;
+        try {
+            sign_str = RSAUtils.sign(ss, privateKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
+        //Log.i("lichao", "json:" + new Gson().toJson(new Login(sign_str, devnum, username, passwd, ts)));
+
+        OkHttpUtils.postString()
+                .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
+                .content(new Gson().toJson(new Login(sign_str, devnum, username, passwd, ts)))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Toasty.error(mContext, getString(R.string.toast_request_error), Toast.LENGTH_LONG, true).show();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.i("lichao", "success:" + response);
+                        if (!response.equals("resource/500")) {
+                            LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
+                            if (gsonLogin.getErrorcode() == 0) {
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                                Toasty.success(mContext, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                            } else {
+                                Toasty.error(mContext, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                            }
+                        } else {
+                            Toasty.error(mContext, getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
+                        }
+                    }
+                });
     }
 
     /**
@@ -272,6 +313,5 @@ public class LoginActivity extends FragmentActivity {
     protected void onDestroy() {
         super.onDestroy();
         android.os.Debug.stopMethodTracing();
-        LocationUtils.getInstance(mContext).removeLocationUpdatesListener();
     }
 }
