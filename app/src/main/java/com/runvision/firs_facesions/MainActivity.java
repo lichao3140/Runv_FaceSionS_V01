@@ -42,14 +42,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     Context mcontext;
     public static FaceFrameView myFaceFrameView;
     public static MyCameraSuf myCameraView;
-   // private Button menu_btn;
+    // private Button menu_btn;
     private DrawerLayout mDrawerLayout = null;
 
     private RelativeLayout show_card;
 
     private TextView loadcardText;
 
-   // private DrawerLayout mbotton_layout=null;
+    // private DrawerLayout mbotton_layout=null;
 
     private List<Fruit> fruitList = new ArrayList<Fruit>();
 
@@ -68,47 +68,48 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private JsonTools mJsonTools = new JsonTools();
 
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case Const.UPDATE_UI:
-                        if (MainService.getService().isCompareSuccess == 1) {//比对成功
-                           if (MainService.getService().timeflag == 1) {
-                                ShowPromptMessage("签到时间未到", 1);
-                                MainService.getService().timeflag = 0;
-                            } else if (MainService.getService().timeflag == 2) {
-                               initSignin();
-                               Log.i("Gavin","跑几次");
-                               sigin_listView.setAdapter(siginadapter);//刷新列表
-                                ShowPromptMessage("签到成功", 2);
-                                MainService.getService().timeflag = 0;
-                            } else if (MainService.getService().timeflag == 3) {
-                                ShowPromptMessage("签到时间已过" + "\r\n" + "签退时间未到", 3);
-                                MainService.getService().timeflag = 0;
-                            } else if (MainService.getService().timeflag == 4) {
-                               signoutflag=true;
-                               initSignin();
-                               sigin_listView.setAdapter(siginadapter);//刷新列表
-                                ShowPromptMessage("签退成功", 4);
-                                MainService.getService().timeflag = 0;
-                            } else if (MainService.getService().timeflag == 5) {
-                                ShowPromptMessage("签退时间已过", 5);
-                                MainService.getService().timeflag = 0;
-                            } else if (MainService.getService().timeflag == 6) {
-                                ShowPromptMessage("不是课堂时间", 6);
-                                MainService.getService().timeflag = 0;
-                            }else if (MainService.getService().timeflag == 7) {
-                                ShowPromptMessage("无法重复签到", 7);
-                                MainService.getService().timeflag = 0;
-                            }else if (MainService.getService().timeflag == 8) {
-                               ShowPromptMessage("没有签到信息", 8);
-                               MainService.getService().timeflag = 0;
-                           }
-                            MainService.getService().isCompareSuccess = 0;
-                        } else if (MainService.getService().isCompareSuccess == 2) {//比对失败
-                            ShowPromptMessage("比对不通过", 7);
-                            MainService.getService().isCompareSuccess = 0;
+                    if (MainService.getService().isCompareSuccess == 1) {//比对成功
+                        if (MainService.getService().timeflag == 1) {
+                            ShowPromptMessage("签到时间未到", 1);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 2) {
+                            initSignin();
+                            Log.i("Gavin","跑几次");
+                            sigin_listView.setAdapter(siginadapter);//刷新列表
+                            ShowPromptMessage("签到成功", 2);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 3) {
+                            ShowPromptMessage("签到时间已过" + "\r\n" + "签退时间未到", 3);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 4) {
+                            signoutflag=true;
+                            initSignin();
+                            sigin_listView.setAdapter(siginadapter);//刷新列表
+                            ShowPromptMessage("签退成功", 4);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 5) {
+                            ShowPromptMessage("签退时间已过", 5);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 6) {
+                            ShowPromptMessage("不是课堂时间", 6);
+                            MainService.getService().timeflag = 0;
+                        }else if (MainService.getService().timeflag == 7) {
+                            ShowPromptMessage("无法重复签到", 7);
+                            MainService.getService().timeflag = 0;
+                        }else if (MainService.getService().timeflag == 8) {
+                            ShowPromptMessage("没有签到信息", 8);
+                            MainService.getService().timeflag = 0;
                         }
+                        MainService.getService().isCompareSuccess = 0;
+                    } else if (MainService.getService().isCompareSuccess == 2) {//比对失败
+                        ShowPromptMessage("比对不通过", 7);
+                        MainService.getService().isCompareSuccess = 0;
+                    }
                     break;
                 default:
                     break;
@@ -163,12 +164,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hideBottomUIMenu();
         setContentView(R.layout.activity_main);
         mcontext=this;
-       // menu_btn=(Button)findViewById(R.id.menu_btn);
-       // menu_btn.setOnClickListener(this);
+        // menu_btn=(Button)findViewById(R.id.menu_btn);
+        // menu_btn.setOnClickListener(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         show_card	= (RelativeLayout) findViewById(R.id.show_card);
         loadcardText = (TextView) findViewById(R.id.loadcardText);
-      //  mbotton_layout= (DrawerLayout) findViewById(R.id.botton_layout);
+        //  mbotton_layout= (DrawerLayout) findViewById(R.id.botton_layout);
         myFaceFrameView = (FaceFrameView) findViewById(R.id.myFaceFrameView);
         myCameraView = (MyCameraSuf) findViewById(R.id.myCameraSurfaceView);
         myCameraView.openCamera();
@@ -184,11 +185,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         siginadapter = new SiginAdapter(MainActivity.this, R.layout.signin_item, signinList);
         sigin_listView = (ListView) findViewById(R.id.below_drawer);
         sigin_listView.setAdapter(siginadapter);
-       // initSignin();
-       // siginadapter = new SiginAdapter(MainActivity.this, R.layout.signin_item, signinList);
-       // sigin_listView = (ListView) findViewById(R.id.below_drawer);
-       // sigin_listView.setAdapter(siginadapter);
-       // listView.setOnItemClickListener(this);
+        // initSignin();
+        // siginadapter = new SiginAdapter(MainActivity.this, R.layout.signin_item, signinList);
+        // sigin_listView = (ListView) findViewById(R.id.below_drawer);
+        // sigin_listView.setAdapter(siginadapter);
+        // listView.setOnItemClickListener(this);
 
         uithread = new UIThread();
         uithread.start();
@@ -213,18 +214,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             signinList.clear();
         }
         if(c.moveToLast()) {
-                if (signinList != null) {
-                    if (signinList.size() > 0) {
-                        signinList.clear();
-                    }
+            if (signinList != null) {
+                if (signinList.size() > 0) {
+                    signinList.clear();
                 }
-                do {
-                    String idnum = c.getString(3).substring(0, 6) + "*********" + c.getString(3).substring(16, 18);
-                    Sigin sd = new Sigin(c.getString(1), CameraHelp.getSmallBitmap(c.getString(4)),
-                            c.getString(2), idnum, c.getString(6));
-                    signinList.add(sd);
-                } while (c.moveToPrevious());
             }
+            do {
+                String idnum = c.getString(3).substring(0, 6) + "*********" + c.getString(3).substring(16, 18);
+                Sigin sd = new Sigin(c.getString(1), CameraHelp.getSmallBitmap(c.getString(4)),
+                        c.getString(2), idnum, c.getString(6));
+                signinList.add(sd);
+            } while (c.moveToPrevious());
+        }
 
     }
 
@@ -243,19 +244,19 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             AlertDialog dialog =new AlertDialog.Builder(MainActivity.this)
                     .setTitle("考勤参数")
                     .setMessage("课堂开始时间(24小时制):"+ AppData.getAppData().getStarttime()+"\r\n"+  //从平台下载的考勤参数
-                                "课堂关闭时间(24小时制):"+ AppData.getAppData().getEndtime()+"\n"+
-                                "签到开始时间(24小时制):"+ AppData.getAppData().getInstarttime()+"\n"+
-                                "签到结束时间(24小时制):"+ AppData.getAppData().getInendtime()+"\n"+
-                                "签退开始时间(24小时制):"+ AppData.getAppData().getOutstarttime()+"\n"+
-                                "签退结束时间(24小时制):"+ AppData.getAppData().getOutendtime()
+                            "课堂关闭时间(24小时制):"+ AppData.getAppData().getEndtime()+"\n"+
+                            "签到开始时间(24小时制):"+ AppData.getAppData().getInstarttime()+"\n"+
+                            "签到结束时间(24小时制):"+ AppData.getAppData().getInendtime()+"\n"+
+                            "签退开始时间(24小时制):"+ AppData.getAppData().getOutstarttime()+"\n"+
+                            "签退结束时间(24小时制):"+ AppData.getAppData().getOutendtime()
                     )
                     .setNegativeButton("更新考勤参数", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                             //更新考勤参数
-                             //发送考勤参数查询接口
-                           // AppData.getAppData().setInscode();
-                           // AppData.getAppData().setDevnum();
+                            //更新考勤参数
+                            //发送考勤参数查询接口
+                            // AppData.getAppData().setInscode();
+                            // AppData.getAppData().setDevnum();
                             String postdate=mJsonTools.parseJSONWithString(4);
                             // Log.d("Gavin",postdate);
                             ToHttpThread mPostDateThread= new ToHttpThread(Const.REGISTER,postdate);
@@ -305,18 +306,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private void ShowPromptMessage(String showmessage,int audionum) {
         if(audionum==0)
         {
-          //  play = MediaPlayer.create(mcontext, R.raw.faceup);
-          //  play.start();
+            //  play = MediaPlayer.create(mcontext, R.raw.faceup);
+            //  play.start();
         }
         if(audionum==1)
         {
-          //  play = MediaPlayer.create(mcontext, R.raw.template);
-          //  play.start();
+            //  play = MediaPlayer.create(mcontext, R.raw.template);
+            //  play.start();
         }
         else if(audionum==2)
         {
-          //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-          //  play.start();
+            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
+            //  play.start();
         }else if(audionum==3)
         {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
