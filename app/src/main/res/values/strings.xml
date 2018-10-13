@@ -4,6 +4,13 @@
     <string name="login_password">PassWord:</string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
+    <string name="login_register_device">Register Device</string>
+    <string name="login_hint_username">Please Input Username</string>
+    <string name="login_hint_password">Input Password</string>
+    <string name="login_forget_password">Forget Password</string>
+    <string name="login_contact_custom">Contact Custom</string>
+    <string name="login_about_us">About Us</string>
+    <string name="login_error_tip">Please Input Number Or Letter</string>
     <string name="register_organ_no">Training Institutions No:</string>
     <string name="register_time_type">Time Device Type:</string>
     <string name="register_manufacturer_factory">Manufacturer Factory:</string>

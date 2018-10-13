@@ -155,7 +155,6 @@ public class LandActivity extends Activity implements View.OnClickListener {
                 deviceRegister();
                 break;
             case R.id.cancelbtn:
-                //返回登陆界面
                 login.setVisibility(View.VISIBLE);
                 reg.setVisibility(View.GONE);
                 break;
@@ -180,13 +179,11 @@ public class LandActivity extends Activity implements View.OnClickListener {
         String sign_str = RSAUtils.sign(ss, privateKey);
 
         Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
+        Log.i("lichao", "json:" + new Gson().toJson(new Login(sign_str, devnum, username, passwd, ts)));
 
-        Log.i("lichao", "json:" + new Gson().toJson(new Login(
-                sign_str, devnum, username, passwd, ts)));
         OkHttpUtils.postString()
                 .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
-                .content(new Gson().toJson(new Login(
-                        sign_str, devnum, username, passwd, ts)))
+                .content(new Gson().toJson(new Login(sign_str, devnum, username, passwd, ts)))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .build()
                 .execute(new StringCallback() {

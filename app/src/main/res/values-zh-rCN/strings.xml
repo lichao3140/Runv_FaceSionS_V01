@@ -4,6 +4,13 @@
     <string name="login_password">密&#160;&#160;&#160;&#160;码:</string>
     <string name="login_login">登&#160;&#160;&#160;&#160;录</string>
     <string name="login_register">注&#160;&#160;&#160;&#160;册</string>
+    <string name="login_register_device">注册考勤终端</string>
+    <string name="login_hint_username">输入用户名</string>
+    <string name="login_hint_password">输入密码</string>
+    <string name="login_forget_password">忘记密码</string>
+    <string name="login_contact_custom">联系客服</string>
+    <string name="login_about_us">关于我们</string>
+    <string name="login_error_tip">请输入数字或字母</string>
     <string name="register_organ_no">培训机构编号:</string>
     <string name="register_time_type">计时终端类型:</string>
     <string name="register_manufacturer_factory">生产厂家:</string>
