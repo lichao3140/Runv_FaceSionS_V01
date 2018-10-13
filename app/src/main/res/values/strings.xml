@@ -18,5 +18,6 @@
     <string name="toast_register_error">Register Error!</string>
     <string name="toast_register_error_code">Register Error Code:</string>
     <string name="toast_request_error">Request Error!</string>
+    <string name="toast_server_error">Server Error!</string>
 
 </resources>

@@ -179,17 +179,14 @@ public class LandActivity extends Activity implements View.OnClickListener {
         byte[] ss = sign.getBytes();
         String sign_str = RSAUtils.sign(ss, privateKey);
 
-//        Log.i("lichao", "privateKey:" + privateKey);
-//        Log.i("lichao", "devnum:" + devnum);
-//        Log.i("lichao", "sign:" + sign);
-        Log.i("lichao", "url:" + Const.LOGIN + "ts=" + ts + "&sign=" + sign_str);
+        Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
 
+        Log.i("lichao", "json:" + new Gson().toJson(new Login(
+                sign_str, devnum, username, passwd, ts)));
         OkHttpUtils.postString()
-                .url(Const.LOGIN + "ts=" + ts + "&sign=" + sign_str)
+                .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
                 .content(new Gson().toJson(new Login(
-                        devnum,
-                        username,
-                        passwd)))
+                        sign_str, devnum, username, passwd, ts)))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .build()
                 .execute(new StringCallback() {
@@ -201,14 +198,18 @@ public class LandActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.i("lichao", "success:" + response);
-                        LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
-                        if (gsonLogin.getErrorcode() == 0) {
-                            Intent intent = new Intent(LandActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                            Toasty.success(LandActivity.this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                        if (!response.equals("resource/500")) {
+                            LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
+                            if (gsonLogin.getErrorcode() == 0) {
+                                Intent intent = new Intent(LandActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                                Toasty.success(LandActivity.this, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                            } else {
+                                Toasty.error(LandActivity.this, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                            }
                         } else {
-                            Toasty.error(LandActivity.this, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                            Toasty.error(LandActivity.this, getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
                         }
                     }
                 });
@@ -238,15 +239,19 @@ public class LandActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onResponse(String response, int id) {
                         Log.i("lichao", "success:" + response);
-                        DeviceResponse gsonData = gson.fromJson(response, DeviceResponse.class);
-                        if (gsonData.getErrorcode() == 0) {
-                            String privateKey = gsonData.getData().getPrivateKey();
-                            String devnum = gsonData.getData().getDevnum();
-                            sharedPreferencesHelper.put("privateKey", privateKey);
-                            sharedPreferencesHelper.put("devnum",devnum);
-                            Toasty.success(LandActivity.this, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
+                        if (!response.equals("resource/500")) {
+                            DeviceResponse gsonData = gson.fromJson(response, DeviceResponse.class);
+                            if (gsonData.getErrorcode() == 0) {
+                                String privateKey = gsonData.getData().getPrivateKey();
+                                String devnum = gsonData.getData().getDevnum();
+                                sharedPreferencesHelper.put("privateKey", privateKey);
+                                sharedPreferencesHelper.put("devnum",devnum);
+                                Toasty.success(LandActivity.this, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
+                            } else {
+                                Toasty.error(LandActivity.this, getString(R.string.toast_register_error_code) + gsonData.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                            }
                         } else {
-                            Toasty.error(LandActivity.this, getString(R.string.toast_register_error_code) + gsonData.getErrorcode(), Toast.LENGTH_LONG, true).show();
+                            Toasty.error(LandActivity.this, getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
                         }
                     }
                 });
