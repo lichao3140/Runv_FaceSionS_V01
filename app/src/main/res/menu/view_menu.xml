@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/nav_me"
+            android:title="设置"
+            android:icon="@mipmap/userinfomodify_n"/>
+        <item
+            android:id="@+id/nav_friend"
+            android:title="考勤参数"
+            android:icon="@mipmap/adduser_n"/>
+        <item
+            android:id="@+id/nav_notification"
+            android:title="退出"
+            android:icon="@mipmap/switchuser_n"/>
+    </group>
+    <group
+        android:id="@+id/group_manage">
+        <item
+            android:id="@+id/nav_manage"
+            android:title="应用管理"
+            android:icon="@drawable/switchuser_n"/>
+    </group>
+    <group
+        android:checkableBehavior="none"
+        android:id="@+id/group_settings">
+        <item android:id="@+id/nav_theme"
+            android:title="主题风格"/>
+        <item android:id="@+id/nav_night"
+            android:title="夜间模式"/>
+        <item android:id="@+id/nav_suggestion"
+            android:title="意见反馈"/>
+        <item android:id="@+id/nav_about"
+            android:title="关于"/>
+    </group>
+</menu>

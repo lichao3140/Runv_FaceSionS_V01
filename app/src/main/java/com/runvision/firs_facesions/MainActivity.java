@@ -291,11 +291,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 e.printStackTrace();
             }
         }
-        if(bean.getName().equals("退出"))
-        {
+        if(bean.getName().equals("退出")) {
             //跳到登陆界面
             myCameraView.releaseCamera();
-            Intent intent = new Intent(MainActivity.this, LandActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
@@ -347,7 +346,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 show_card.setVisibility(View.GONE);
             }
         }, 2000);
+    }
 
 
-    };
 }

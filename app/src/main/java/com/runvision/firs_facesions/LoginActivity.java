@@ -213,7 +213,7 @@ public class LoginActivity extends FragmentActivity {
                     etPassword.setSelection(pwd.length());
                 break;
             case R.id.btn_login:
-                Intent intentMain = new Intent(mContext, MainActivity.class);
+                Intent intentMain = new Intent(mContext, CameraActivity.class);
                 startActivity(intentMain);
                 finish();
 //                Kawaii_LoadingView.setVisibility(View.VISIBLE);

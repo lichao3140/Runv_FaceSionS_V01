@@ -43,6 +43,12 @@
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".CameraActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_camera"
+            android:theme="@style/FullscreenTheme" />
+
         <service
             android:name=".MainService"
             android:enabled="true"
