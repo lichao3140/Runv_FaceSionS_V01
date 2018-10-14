@@ -4,23 +4,6 @@
                 android:background="#80000000"
                 android:layout_height="match_parent" >
 
-    <!--FrameLayout
-        android:id="@+id/index"
-        android:layout_width="640px"
-        android:layout_height="480px"
-        android:layout_marginLeft="60dp">
-    <com.runvision.myview.MyCameraSuf
-        android:id="@+id/myCameraSurfaceView"
-        android:layout_width="640px"
-        android:layout_height="480px"
-        />
-    </FrameLayout>
-
-    <com.runvision.myview.FaceFrameView
-        android:id="@+id/myFaceFrameView"
-        android:layout_width="640px"
-        android:layout_height="480px"/-->
-
     <include
         android:id="@+id/login"
         android:layout_width="726dp"

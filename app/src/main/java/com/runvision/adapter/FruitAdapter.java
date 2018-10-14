@@ -1,4 +1,4 @@
-package com.runvision.bean;
+package com.runvision.adapter;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.runvision.bean.Fruit;
 import com.runvision.firs_facesions.R;
 
 import java.util.List;

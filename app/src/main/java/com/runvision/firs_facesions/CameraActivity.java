@@ -3,6 +3,7 @@ package com.runvision.firs_facesions;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -11,27 +12,32 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
-
 import com.mylhyl.circledialog.CircleDialog;
+import com.runvision.adapter.BaseAdapter;
+import com.runvision.adapter.MenuCardAdapter;
+import com.runvision.adapter.SignAdapter;
 import com.runvision.bean.AppData;
+import com.runvision.bean.Sign;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
+import com.runvision.utils.CameraHelp;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 
 
-public class CameraActivity extends AppCompatActivity implements
+public class CameraActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final boolean AUTO_HIDE = true;
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     @BindView(R.id.fullscreen_content)
@@ -42,6 +48,10 @@ public class CameraActivity extends AppCompatActivity implements
     public Context context;
     public FaceFrameView myFaceFrameView;
     public MyCameraSuf myCameraView;
+
+    private List<Sign> signList = new ArrayList<Sign>();
+    private SignAdapter signadapter;
+    private ListView sign_listView;;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -64,6 +74,7 @@ public class CameraActivity extends AppCompatActivity implements
             if (actionBar != null) {
                 actionBar.show();
             }
+            initSign();
             mControlsView.setVisibility(View.VISIBLE);
         }
     };
@@ -72,16 +83,6 @@ public class CameraActivity extends AppCompatActivity implements
         @Override
         public void run() {
             hide();
-        }
-    };
-
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
         }
     };
 
@@ -107,7 +108,30 @@ public class CameraActivity extends AppCompatActivity implements
         myCameraView = findViewById(R.id.myCameraSurfaceView);
         myCameraView.openCamera();
 
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        signadapter = new SignAdapter(context, R.layout.signin_item, signList);
+        sign_listView = findViewById(R.id.lv_sign);
+        sign_listView.setAdapter(signadapter);
+    }
+
+    private void initSign() {
+        //读取数据库显示签到数据
+        Cursor c=  MainService.getService().helper.getAllTitles();
+        if(c.getCount()==0) {
+            signList.clear();
+        }
+        if(c.moveToLast()) {
+            if (signList != null) {
+                if (signList.size() > 0) {
+                    signList.clear();
+                }
+            }
+            do {
+                String idnum = c.getString(3).substring(0, 6) + "*********" + c.getString(3).substring(16, 18);
+                Sign sd = new Sign(c.getString(1), CameraHelp.getSmallBitmap(c.getString(4)),
+                        c.getString(2), idnum, c.getString(6));
+                signList.add(sd);
+            } while (c.moveToPrevious());
+        }
     }
 
     @OnClick({R.id.fullscreen_content})
@@ -137,6 +161,11 @@ public class CameraActivity extends AppCompatActivity implements
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    @Override
+    protected BaseAdapter createAdapter() {
+        return new MenuCardAdapter(this);
     }
 
     /**
@@ -220,4 +249,5 @@ public class CameraActivity extends AppCompatActivity implements
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
 }

@@ -2,20 +2,20 @@ package com.runvision.bean;
 
 import android.graphics.Bitmap;
 
-public class Sigin {
+public class Sign {
 
     private String name;
     private String gender;
     private String cardNo;
-    private String sigintime;
+    private String signtime;
     private Bitmap imageId;
 
-    public Sigin(String name, Bitmap imageId, String gender, String cardNo, String sigintime) {
+    public Sign(String name, Bitmap imageId, String gender, String cardNo, String signtime) {
         this.name = name;
         this.imageId = imageId;
         this.gender = gender;
         this.cardNo = cardNo;
-        this.sigintime = sigintime;
+        this.signtime = signtime;
     }
 
     public String getName() {
@@ -30,8 +30,8 @@ public class Sigin {
         return cardNo;
     }
 
-    public String getSigintime() {
-        return sigintime;
+    public String getSigntime() {
+        return signtime;
     }
 
     public Bitmap getImageId() {

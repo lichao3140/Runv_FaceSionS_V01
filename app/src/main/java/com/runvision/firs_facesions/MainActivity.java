@@ -22,11 +22,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.runvision.adapter.SignAdapter;
 import com.runvision.bean.AppData;
 import com.runvision.bean.Fruit;
-import com.runvision.bean.FruitAdapter;
-import com.runvision.bean.Sigin;
-import com.runvision.bean.SiginAdapter;
+import com.runvision.adapter.FruitAdapter;
+import com.runvision.bean.Sign;
 import com.runvision.core.Const;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
@@ -53,15 +53,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     private List<Fruit> fruitList = new ArrayList<Fruit>();
 
-    private List<Sigin> signinList = new ArrayList<Sigin>();
+    private List<Sign> signinList = new ArrayList<Sign>();
 
     private MediaPlayer play;
 
     private UIThread uithread ;
 
-    SiginAdapter siginadapter;
+    SignAdapter signadapter;
 
-    ListView sigin_listView;
+    ListView sign_listView;
     private boolean signoutflag=false;
 
 
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         } else if (MainService.getService().timeflag == 2) {
                             initSignin();
                             Log.i("Gavin","跑几次");
-                            sigin_listView.setAdapter(siginadapter);//刷新列表
+                            sign_listView.setAdapter(signadapter);//刷新列表
                             ShowPromptMessage("签到成功", 2);
                             MainService.getService().timeflag = 0;
                         } else if (MainService.getService().timeflag == 3) {
@@ -89,7 +89,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         } else if (MainService.getService().timeflag == 4) {
                             signoutflag=true;
                             initSignin();
-                            sigin_listView.setAdapter(siginadapter);//刷新列表
+                            sign_listView.setAdapter(signadapter);//刷新列表
                             ShowPromptMessage("签退成功", 4);
                             MainService.getService().timeflag = 0;
                         } else if (MainService.getService().timeflag == 5) {
@@ -182,11 +182,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         listView.setOnItemClickListener(this);
 
         initSignin();
-        siginadapter = new SiginAdapter(MainActivity.this, R.layout.signin_item, signinList);
-        sigin_listView = (ListView) findViewById(R.id.below_drawer);
-        sigin_listView.setAdapter(siginadapter);
+        signadapter = new SignAdapter(MainActivity.this, R.layout.signin_item, signinList);
+        sign_listView = (ListView) findViewById(R.id.below_drawer);
+        sign_listView.setAdapter(signadapter);
         // initSignin();
-        // siginadapter = new SiginAdapter(MainActivity.this, R.layout.signin_item, signinList);
+        // siginadapter = new SignAdapter(MainActivity.this, R.layout.signin_item, signinList);
         // sigin_listView = (ListView) findViewById(R.id.below_drawer);
         // sigin_listView.setAdapter(siginadapter);
         // listView.setOnItemClickListener(this);
@@ -221,7 +221,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
             do {
                 String idnum = c.getString(3).substring(0, 6) + "*********" + c.getString(3).substring(16, 18);
-                Sigin sd = new Sigin(c.getString(1), CameraHelp.getSmallBitmap(c.getString(4)),
+                Sign sd = new Sign(c.getString(1), CameraHelp.getSmallBitmap(c.getString(4)),
                         c.getString(2), idnum, c.getString(6));
                 signinList.add(sd);
             } while (c.moveToPrevious());
