@@ -17,9 +17,11 @@ package com.runvision.firs_facesions;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -33,6 +35,8 @@ import java.util.List;
 
 public class BaseActivity extends AppCompatActivity implements SwipeItemClickListener {
 
+    protected Toolbar mToolbar;
+    protected ActionBar mActionBar;
     protected SwipeMenuRecyclerView mRecyclerView;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected RecyclerView.ItemDecoration mItemDecoration;
@@ -45,7 +49,14 @@ public class BaseActivity extends AppCompatActivity implements SwipeItemClickLis
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
 
+        mToolbar = findViewById(R.id.toolbar);
         mRecyclerView = findViewById(R.id.recycler_view);
+
+        setSupportActionBar(mToolbar);
+        mActionBar = getSupportActionBar();
+        if (displayHomeAsUpEnabled()) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         mLayoutManager = createLayoutManager();
         mItemDecoration = createItemDecoration();

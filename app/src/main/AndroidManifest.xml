@@ -44,6 +44,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".SignRecordActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".CameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"

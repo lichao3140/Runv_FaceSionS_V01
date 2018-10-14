@@ -167,7 +167,8 @@ public class CameraActivity extends BaseActivity implements
                 configDialog();
                 break;
             case R.id.nav_sign:
-
+                Intent sign = new Intent(context, SignRecordActivity.class);
+                startActivity(sign);
                 break;
             case R.id.nav_exit:
                 finish();
@@ -218,6 +219,7 @@ public class CameraActivity extends BaseActivity implements
     @Override
     protected void onRestart() {
         super.onRestart();
+        myCameraView.openCamera();
     }
 
     @Override
@@ -228,6 +230,7 @@ public class CameraActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        myCameraView.releaseCamera();
     }
 
     @SuppressLint("HandlerLeak")
