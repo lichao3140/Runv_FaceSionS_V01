@@ -26,11 +26,9 @@ public class FaceIDCardCompareLib {
     private Context mContext;
     private static FaceIDCardCompareLib faceCore = null;
 
-
     public synchronized static FaceIDCardCompareLib getInstance() {
         return faceCore == null ? (faceCore = new FaceIDCardCompareLib()) : faceCore;
     }
-
 
     private byte[] card_frature = null;
     private byte[] face_frature = null;

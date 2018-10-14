@@ -16,6 +16,7 @@
 
 package com.runvision.core;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -167,11 +168,11 @@ public class MyApplication extends Application {
         initLib.start();
     }
 
+    @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-
                 Toast.makeText(context, "算法初始化失败", Toast.LENGTH_SHORT).show();
                 LogToFile.e(TAG, "算法初始化失败");
             }
@@ -244,9 +245,6 @@ public class MyApplication extends Application {
             mInitStatus = true;
         }
     }
-
-
-
 
     private final static String DETECT_KO_SO = "libTHDetect_ko.so";
     private final static String DETECT_KO = "libTHDetect_ko";

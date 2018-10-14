@@ -43,7 +43,7 @@ import java.util.Map;
 public class MainService extends Service {
 
     private String TAG = "MainService";
-    // ----------------------------------------����������--------------------------------
+    // ----------------------------------------begin--------------------------------------------
     private static final int VID = 1024; // IDR VID
     private static final int PID = 50010; // IDR PID
     private final String ACTION_USB_PERMISSION = "com.example.scarx.idcardreader.USB_PERMISSION";
@@ -187,7 +187,6 @@ public class MainService extends Service {
                             mhandler.sendMessage(msg);
                         }
                     }
-
                 }
             }).start();
 
@@ -222,7 +221,6 @@ public class MainService extends Service {
                                 }
                             }).start();
                         }
-
                     } else {
                         Log.i(TAG, "cardBmp==null");
                         LogToFile.i(TAG, "cardBmp==null");

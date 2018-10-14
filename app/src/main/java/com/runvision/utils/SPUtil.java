@@ -22,10 +22,6 @@ import android.content.SharedPreferences;
 
 import com.runvision.core.MyApplication;
 
-/**
- * Created by Tnno Wu on 2017/4/8.
- */
-
 public class SPUtil {
 
 	private static final String CONFIG = "config";

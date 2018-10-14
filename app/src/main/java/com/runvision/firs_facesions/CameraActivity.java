@@ -2,9 +2,11 @@ package com.runvision.firs_facesions;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,7 @@ public class CameraActivity extends AppCompatActivity implements
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
+
     private View mControlsView;
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
@@ -83,11 +86,16 @@ public class CameraActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         context = this;
         mVisible = true;
+        startService(new Intent(context, MainService.class));
         init();
     }
 
     private void init() {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
+        myFaceFrameView = findViewById(R.id.myFaceFrameView);
+        myCameraView = findViewById(R.id.myCameraSurfaceView);
+        myCameraView.openCamera();
+
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
@@ -98,6 +106,32 @@ public class CameraActivity extends AppCompatActivity implements
                 toggle();
                 break;
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -139,10 +173,5 @@ public class CameraActivity extends AppCompatActivity implements
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
     }
 }

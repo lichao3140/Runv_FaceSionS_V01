@@ -46,28 +46,10 @@ public class Const {
     private static String SERVER_IP = "http://124.133.246.162:38071/jsxt/api/";
     public static String REGISTER =  SERVER_IP + "device?";//考勤终端注册接口
     public static String LOGIN = SERVER_IP + "devicelogin?";//考勤终端登录接口
-    public static String FACE_WITNESS = SERVER_IP + "FaceVerify?";//人脸验证接口
-    public static String PARAMETER = SERVER_IP + "Atndquery?";//考勤参数查询接口
-    public static String STULOGIN = SERVER_IP + "Stulogin?";//学员培训登录接口
+    public static String FACE_WITNESS = SERVER_IP + "faceVerify?";//人脸验证接口
+    public static String PARAMETER = SERVER_IP + "atndquery?";//考勤参数查询接口
+    public static String STULOGIN = SERVER_IP + "stulogin?";//学员培训登录接口
     public static String STULOGOUT = SERVER_IP + "tulogout?";//学员培训登出接口
 
 
-
-
-    public static String PRI = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAMJWg+jgnW5X4CHvTVDMcnBsFAdh"+
-            "WNQQMjfOOie1KW+ZpPOqZ4tiUVsfbVReEkET1jEfhGfViwtmgyULonIcfjRFhESZCIDZeaOMikQ3"+
-            "gL9kf7z3Yza2bxqIgLhb4XTu3OudRHbuo9uytwoDnKtx3lT6XCixklH8AKtLgDL9WV2dAgMBAAEC"+
-            "gYEAnfWeUGpJ7EeHCW4uBM+48QIYIYuRnQTxHIUGpgHNhUV4WwoWEag/gnZ/8gRoh/bssY7xm0hq"+
-            "NUEEtdbIGkJonP13O/QAkADgSu/OpZV5H/xP+RFhBaN3OA40/ItOOO1MIb+BwcZrDoZUkoXv1SWi"+
-            "vUv2QUcAccNg2gbGYwv4A40CQQD4WQHyiviR8OpSlc5BxTg37SKapmXOcQtmpPOvlK99zftSE79+"+
-            "5mIYfHsSp1HSpfk+VWVt2G7BqZOsNvXZRb77AkEAyFN5JtnIzgSgo7LpooWErYRnoqgblzyKpN1C"+
-            "XgT2QGnub4PP7khKbUjSmrsoAmwFXvWiPOX/EF0I/Ezgr29SRwJBAKLW2ewLK4mmCj80cxW1F3O0"+
-            "TahRyxdeEDexmQdb2uYGle/vevTeYxvjI1/Lzl7s7Uzt+Z/Y9maNpoKZVwKsNNkCQQCilczwUTV+"+
-            "r5bJBX5Fn2PtiFasVw/9kO9dmw4wTIqoANG5xBtQY2+0frQfTOLOBGnfhjCkiG6ZE0klrCd3ezwl"+
-            "AkBS3Ep38UyAufPmXKRS8l91BRAw4x+Obk8io3PuuRUi+5JwmR9VRzlCaJhbQmTjtXTeg1f2eIBg"+
-            "+KPvP/5vfOeE";
-
-    public static String PUB = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCVoPo4J1uV+Ah701QzHJwbBQHYVjUEDI3zjon"+
-            "tSlvmaTzqmeLYlFbH21UXhJBE9YxH4Rn1YsLZoMlC6JyHH40RYREmQiA2XmjjIpEN4C/ZH+892M2"+
-            "tm8aiIC4W+F07tzrnUR27qPbsrcKA5yrcd5U+lwosZJR/ACrS4Ay/VldnQIDAQAB";
 }
