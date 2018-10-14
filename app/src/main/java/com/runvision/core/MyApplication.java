@@ -32,6 +32,7 @@ import com.face.sv.FaceDetect;
 import com.face.sv.FaceLive;
 import com.face.sv.FaceRecognize;
 import com.face.sv.ImageUtil;
+import com.mylhyl.circledialog.res.values.CircleDimen;
 import com.runvision.bean.UnCeHandler;
 import com.runvision.utils.LogToFile;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -89,6 +90,11 @@ public class MyApplication extends Application {
         initFaceModel();
         initSdkLib();
         initHttp();
+        initDialog();
+    }
+
+    private void initDialog() {
+        CircleDimen.DIALOG_RADIUS = 20;
     }
 
     private void initHttp() {

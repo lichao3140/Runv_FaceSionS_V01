@@ -8,18 +8,23 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.Toast;
+
+import com.mylhyl.circledialog.CircleDialog;
+import com.runvision.bean.AppData;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 
 
 public class CameraActivity extends AppCompatActivity implements
@@ -32,6 +37,8 @@ public class CameraActivity extends AppCompatActivity implements
     @BindView(R.id.fullscreen_content)
     View mContentView;
 
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
     public Context context;
     public FaceFrameView myFaceFrameView;
     public MyCameraSuf myCameraView;
@@ -91,7 +98,11 @@ public class CameraActivity extends AppCompatActivity implements
     }
 
     private void init() {
+        drawerLayout = findViewById(R.id.drawer);
         mControlsView = findViewById(R.id.fullscreen_content_controls);
+        navigationView = findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+
         myFaceFrameView = findViewById(R.id.myFaceFrameView);
         myCameraView = findViewById(R.id.myCameraSurfaceView);
         myCameraView.openCamera();
@@ -110,8 +121,43 @@ public class CameraActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        switch (id) {
+            case R.id.nav_setting:
 
+                break;
+            case R.id.nav_config:
+                configDialog();
+                break;
+            case R.id.nav_exit:
+
+                break;
+            default:
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    /**
+     * 考勤参数
+     */
+    private void configDialog() {
+        new CircleDialog.Builder()
+                .setTitle("考勤参数")
+                .setText(
+                        "课堂开始时间(24小时制):"+ AppData.getAppData().getStarttime()+"\r\n"+
+                        "课堂关闭时间(24小时制):"+ AppData.getAppData().getEndtime()+"\n"+
+                        "签到开始时间(24小时制):"+ AppData.getAppData().getInstarttime()+"\n"+
+                        "签到结束时间(24小时制):"+ AppData.getAppData().getInendtime()+"\n"+
+                        "签退开始时间(24小时制):"+ AppData.getAppData().getOutstarttime()+"\n"+
+                        "签退结束时间(24小时制):"+ AppData.getAppData().getOutendtime())
+                .setPositive("更新参数",  v ->
+                        Toasty.info(context, "参数更新", Toast.LENGTH_SHORT, true).show())
+                .setNegative("取消", null)
+                .setOnCancelListener(dialog ->
+                        Toasty.info(context, "取消！", Toast.LENGTH_SHORT, true).show())
+                .show(getSupportFragmentManager());
     }
 
     @Override

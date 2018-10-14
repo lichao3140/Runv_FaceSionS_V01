@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
         <item
-            android:id="@+id/nav_me"
+            android:id="@+id/nav_setting"
             android:title="设置"
             android:icon="@mipmap/userinfomodify_n"/>
         <item
-            android:id="@+id/nav_friend"
+            android:id="@+id/nav_config"
             android:title="考勤参数"
             android:icon="@mipmap/adduser_n"/>
         <item
-            android:id="@+id/nav_notification"
+            android:id="@+id/nav_exit"
             android:title="退出"
             android:icon="@mipmap/switchuser_n"/>
     </group>
