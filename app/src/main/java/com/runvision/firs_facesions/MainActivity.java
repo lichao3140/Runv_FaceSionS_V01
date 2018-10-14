@@ -114,15 +114,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 default:
                     break;
             }
-
         }
-
     };
 
     private class UIThread extends Thread {
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             super.run();
             while (true) {
                 try {
@@ -131,12 +128,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     msg.what = Const.UPDATE_UI;
                     handler.sendMessage(msg);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         }
-
     }
 
     /**
@@ -303,38 +298,28 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
 
     private void ShowPromptMessage(String showmessage,int audionum) {
-        if(audionum==0)
-        {
+        if(audionum==0) {
             //  play = MediaPlayer.create(mcontext, R.raw.faceup);
             //  play.start();
-        }
-        if(audionum==1)
-        {
+        } else if(audionum==1) {
             //  play = MediaPlayer.create(mcontext, R.raw.template);
             //  play.start();
-        }
-        else if(audionum==2)
-        {
+        } else if(audionum==2) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
-        }else if(audionum==3)
-        {
+        } else if(audionum==3) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
-        }else if(audionum==4)
-        {
+        } else if(audionum==4) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
-        }else if(audionum==5)
-        {
+        } else if(audionum==5) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
-        }else if(audionum==6)
-        {
+        } else if(audionum==6) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
-        }else if(audionum==7)
-        {
+        } else if(audionum==7) {
             //  play = MediaPlayer.create(mcontext, R.raw.cardid);
             //  play.start();
         }
