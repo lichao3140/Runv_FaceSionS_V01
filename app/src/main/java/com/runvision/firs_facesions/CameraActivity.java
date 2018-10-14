@@ -110,6 +110,7 @@ public class CameraActivity extends BaseActivity implements
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         navigationView = findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);//显示图片原始样式
 
         myFaceFrameView = findViewById(R.id.myFaceFrameView);
         myCameraView = findViewById(R.id.myCameraSurfaceView);
@@ -165,20 +166,28 @@ public class CameraActivity extends BaseActivity implements
             case R.id.nav_config:
                 configDialog();
                 break;
-            case R.id.nav_exit:
+            case R.id.nav_sign:
 
                 break;
+            case R.id.nav_exit:
+                finish();
+                break;
+            case R.id.nav_about:
+                new CircleDialog.Builder()
+                        .setTitle("技术支持")
+                        .setText("深圳市元视科技有限公司")
+                        .setPositive("确定",  null)
+                        .show(getSupportFragmentManager());
+                break;
             default:
+                drawerLayout.closeDrawers();
                 break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
-    @Override
-    protected BaseAdapter createAdapter() {
-        return new MenuCardAdapter(this);
-    }
+
 
     /**
      * 考勤参数

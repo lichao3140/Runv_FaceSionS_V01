@@ -10,15 +10,15 @@
             android:title="考勤参数"
             android:icon="@mipmap/adduser_n"/>
         <item
-            android:id="@+id/nav_exit"
-            android:title="退出"
+            android:id="@+id/nav_sign"
+            android:title="考勤记录"
             android:icon="@mipmap/switchuser_n"/>
     </group>
     <group
         android:id="@+id/group_manage">
         <item
-            android:id="@+id/nav_manage"
-            android:title="考勤记录"
+            android:id="@+id/nav_exit"
+            android:title="退出"
             android:icon="@drawable/switchuser_n"/>
     </group>
     <group
@@ -31,6 +31,6 @@
         <item android:id="@+id/nav_suggestion"
             android:title="意见反馈"/>
         <item android:id="@+id/nav_about"
-            android:title="关于我们"/>
+            android:title="技术支持"/>
     </group>
 </menu>
