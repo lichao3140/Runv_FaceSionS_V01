@@ -258,6 +258,8 @@ public class LoginActivity extends FragmentActivity {
                             if (!response.equals("resource/500")) {
                                 LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                                 if (gsonLogin.getErrorcode() == 0) {
+                                    // 将人脸Base64数据保存
+                                    faceSP.put("face", gsonLogin.getData().getFace());
                                     addFace(gsonLogin.getData().getFace());
                                     Intent intent = new Intent(mContext, FaceActivity.class);
                                     startActivity(intent);
@@ -285,17 +287,14 @@ public class LoginActivity extends FragmentActivity {
             Toasty.warning(mContext, "获取模板图片失败", Toast.LENGTH_SHORT, true).show();
             return;
         }
-
-        // 将人脸Base64数据保存
-        faceSP.put("face", faceInfo);
-
-        //保存图片
-        //生成随机图片ID
-        String imageID = IDUtils.genImageName();
-        byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
-        Bitmap faceBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
-        FileUtils.saveFile(faceBitmap, imageID, Const.TEMP_DIR);
-
+        if (!faceInfo.equals(faceSP.getSharedPreference("face", "").toString().trim())) {
+            //保存图片
+            //生成随机图片ID
+            String imageID = IDUtils.genImageName();
+            byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
+            Bitmap faceBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+            FileUtils.saveFile(faceBitmap, imageID, Const.TEMP_DIR);
+        }
     }
 
     /**
