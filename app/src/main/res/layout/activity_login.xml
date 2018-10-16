@@ -140,6 +140,17 @@
                 android:textColor="@color/white"
                 android:textSize="18dp" />
 
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.Large.Circle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fitsSystemWindows="true"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:SpinKit_Color="@color/colorAccent" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -167,26 +178,8 @@
                     android:textColor="@color/gray"
                     android:textSize="14dp" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
-
-    <scut.carson_ho.kawaii_loadingview.Kawaii_LoadingView
-        android:id="@+id/Kawaii_LoadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        app:blockColor="@color/gold"
-        app:lineNumber="3"
-        app:fixBlock_Angle="5"
-        app:moveBlock_Angle="20"
-        app:blockInterval="8dp"
-        app:half_BlockWidth="15dp"
-        app:initPosition="0"
-        app:isClock_Wise="false"
-        app:moveSpeed="500"
-        android:visibility="gone"
-        app:move_Interpolator="@android:anim/bounce_interpolator" />
 
     <LinearLayout
         android:id="@+id/service"

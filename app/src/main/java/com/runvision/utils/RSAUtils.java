@@ -1,9 +1,10 @@
 package com.runvision.utils;
 
-import javax.crypto.Cipher;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
+
+import javax.crypto.Cipher;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Key;
@@ -19,8 +20,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * <p>
@@ -439,9 +438,8 @@ public class RSAUtils {
           String pub="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCVoPo4J1uV+Ah701QzHJwbBQHYVjUEDI3zjon"+
 "tSlvmaTzqmeLYlFbH21UXhJBE9YxH4Rn1YsLZoMlC6JyHH40RYREmQiA2XmjjIpEN4C/ZH+892M2"+
 "tm8aiIC4W+F07tzrnUR27qPbsrcKA5yrcd5U+lwosZJR/ACrS4Ay/VldnQIDAQAB";
-
-          /*
-          JSONObject json = new JSONObject();
+          
+          JSONObject json=new JSONObject();
           json.put("name", "xinqingsong");
           json.put("idCard", "3714855988860522");
           
@@ -450,15 +448,16 @@ public class RSAUtils {
           String sign= sign(ss, pri);
           System.out.println("签名后的sign："+sign);
           
-          JSONObject jsonss = new JSONObject();
+          JSONObject jsonss=new JSONObject();
           jsonss.put("name", "xinqingsong");
           jsonss.put("idCard", "3714855988860523");
-
           byte[] sss=jsonss.toString().getBytes();
           boolean su=verify(sss, pub, sign);
           
           System.out.println("验证签名是否正确："+su);
-    	*/
+    	
 	}
-
+    
+    
+    
 }

@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.mylhyl.circledialog.CircleDialog;
+import com.runvision.HttpCallback.HttpAtndquery;
 import com.runvision.adapter.BaseAdapter;
 import com.runvision.adapter.MenuCardAdapter;
 import com.runvision.adapter.SignAdapter;
@@ -188,8 +189,6 @@ public class CameraActivity extends BaseActivity implements
         return false;
     }
 
-
-
     /**
      * 考勤参数
      */
@@ -204,7 +203,7 @@ public class CameraActivity extends BaseActivity implements
                         "签退开始时间(24小时制):"+ AppData.getAppData().getOutstarttime()+"\n"+
                         "签退结束时间(24小时制):"+ AppData.getAppData().getOutendtime())
                 .setPositive("更新参数",  v ->
-                        Toasty.info(context, "参数更新", Toast.LENGTH_SHORT, true).show())
+                                HttpAtndquery.Atndquery(context))
                 .setNegative("取消", null)
                 .setOnCancelListener(dialog ->
                         Toasty.info(context, "取消！", Toast.LENGTH_SHORT, true).show())

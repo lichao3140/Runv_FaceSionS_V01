@@ -109,6 +109,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 String devnum = gsonData.getData().getDevnum();
                                 sharedPreferencesHelper.put("privateKey", privateKey);
                                 sharedPreferencesHelper.put("devnum",devnum);
+                                sharedPreferencesHelper.put("inscode", etInscode.getText().toString().trim());
+                                sharedPreferencesHelper.put("termtype", etTermtype.getText().toString().trim());
+                                sharedPreferencesHelper.put("vender", etVender.getText().toString().trim());
+                                sharedPreferencesHelper.put("model", etModel.getText().toString().trim());
+                                sharedPreferencesHelper.put("gps", "15|56");
+                                sharedPreferencesHelper.put("imei", etImei.getText().toString());
                                 finish();
                                 Toasty.success(mContext, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
                             } else {

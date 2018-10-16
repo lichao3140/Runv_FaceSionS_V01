@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FaceActivity">
+
+    <FrameLayout
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.runvision.myview.MyCameraSuf
+            android:id="@+id/myCameraSurfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <com.runvision.myview.FaceFrameView
+        android:id="@+id/myFaceFrameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        layout="@layout/layout_tip"/>
+
+    <ImageView
+        android:id="@+id/iv_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"/>
+
+</android.support.constraint.ConstraintLayout>

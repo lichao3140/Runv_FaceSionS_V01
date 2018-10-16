@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.runvision.firs_facesions">
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -34,24 +34,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".SignRecordActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".FaceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme"/>
+
         <activity
             android:name=".CameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_camera"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
         <service
