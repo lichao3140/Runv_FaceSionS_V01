@@ -39,17 +39,14 @@ public class FaceActivity extends BaseActivity {
         show_card	= findViewById(R.id.show_card);
         loadcardText = findViewById(R.id.loadcardText);
         ivFace = findViewById(R.id.iv_face);
-        new Thread() {
+        new Thread() { // 将服务器返回的Base64数据转换成图片
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String firstInfo = faceSP.getSharedPreference("face", "").toString().trim();
-                        byte[] decode = Base64.decode(firstInfo, Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
-                        ivFace.setImageBitmap(bitmap);
-                    }
+                runOnUiThread(() -> {
+                    String faceInfo = faceSP.getSharedPreference("face", "").toString().trim();
+                    byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+                    ivFace.setImageBitmap(bitmap);
                 });
             }
         }.start();
@@ -59,6 +56,11 @@ public class FaceActivity extends BaseActivity {
     protected void onRestart() {
         super.onRestart();
         myCameraView.openCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

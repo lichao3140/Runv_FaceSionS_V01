@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +14,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
+import android.util.Base64;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -29,6 +31,8 @@ import com.google.gson.Gson;
 import com.runvision.bean.Login;
 import com.runvision.bean.LoginResponse;
 import com.runvision.core.Const;
+import com.runvision.utils.FileUtils;
+import com.runvision.utils.IDUtils;
 import com.runvision.utils.LogUtil;
 import com.runvision.utils.RSAUtils;
 import com.runvision.utils.SharedPreferencesHelper;
@@ -43,6 +47,7 @@ import okhttp3.Call;
 import okhttp3.MediaType;
 
 /**
+ * 登录
  * Created by ChaoLi on 2018/10/13 0013 - 12:48
  * Email: lichao3140@gmail.com
  * Version: v1.0
@@ -154,38 +159,30 @@ public class LoginActivity extends FragmentActivity {
         /**
          * 禁止键盘弹起的时候可以滚动
          */
-        scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
+        scrollView.setOnTouchListener((view, motionEvent) -> true);
 
-        scrollView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View view, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    int dist = content.getBottom() - bottom;
-                    if (dist > 0) {
-                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", 0.0f, -dist);
-                        mAnimatorTranslateY.setDuration(300);
-                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
-                        mAnimatorTranslateY.start();
-                        zoomIn(logo, dist);
-                    }
-                    service.setVisibility(View.INVISIBLE);
-
-                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-                    if ((content.getBottom() - oldBottom) > 0) {
-                        ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", content.getTranslationY(), 0);
-                        mAnimatorTranslateY.setDuration(300);
-                        mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
-                        mAnimatorTranslateY.start();
-                        //键盘收回后，logo恢复原来大小，位置同样回到初始位置
-                        zoomOut(logo);
-                    }
-                    service.setVisibility(View.VISIBLE);
+        scrollView.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
+                int dist = content.getBottom() - bottom;
+                if (dist > 0) {
+                    ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", 0.0f, -dist);
+                    mAnimatorTranslateY.setDuration(300);
+                    mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
+                    mAnimatorTranslateY.start();
+                    zoomIn(logo, dist);
                 }
+                service.setVisibility(View.INVISIBLE);
+
+            } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
+                if ((content.getBottom() - oldBottom) > 0) {
+                    ObjectAnimator mAnimatorTranslateY = ObjectAnimator.ofFloat(content, "translationY", content.getTranslationY(), 0);
+                    mAnimatorTranslateY.setDuration(300);
+                    mAnimatorTranslateY.setInterpolator(new LinearInterpolator());
+                    mAnimatorTranslateY.start();
+                    //键盘收回后，logo恢复原来大小，位置同样回到初始位置
+                    zoomOut(logo);
+                }
+                service.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -238,8 +235,6 @@ public class LoginActivity extends FragmentActivity {
             byte[] ss = sign.getBytes();
             String sign_str = RSAUtils.sign(ss, privateKey);
 
-//            Log.i("lichao", "url:" + Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
-
             OkHttpUtils.postString()
                     .url(Const.LOGIN + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
                     .content(new Gson().toJson(new Login(sign_str, devnum, username, passwd, ts)))
@@ -263,7 +258,7 @@ public class LoginActivity extends FragmentActivity {
                             if (!response.equals("resource/500")) {
                                 LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                                 if (gsonLogin.getErrorcode() == 0) {
-                                    faceSP.put("face", gsonLogin.getData().getFace());
+                                    addFace(gsonLogin.getData().getFace());
                                     Intent intent = new Intent(mContext, FaceActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -279,6 +274,28 @@ public class LoginActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 保存人脸模板
+     * @param faceInfo
+     */
+    private void addFace(String faceInfo) {
+        if (faceInfo.isEmpty()) {
+            Toasty.warning(mContext, "获取模板图片失败", Toast.LENGTH_SHORT, true).show();
+            return;
+        }
+
+        // 将人脸Base64数据保存
+        faceSP.put("face", faceInfo);
+
+        //保存图片
+        //生成随机图片ID
+        String imageID = IDUtils.genImageName();
+        byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
+        Bitmap faceBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+        FileUtils.saveFile(faceBitmap, imageID, Const.TEMP_DIR);
+
     }
 
     /**

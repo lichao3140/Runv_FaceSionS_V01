@@ -42,6 +42,7 @@ public class Const {
 
     public static String CARD_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Card/";
     public static String FACE_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/";
+    public static final String TEMP_DIR = "FaceTemplate";
 
     private static String SERVER_IP = "http://124.133.246.162:38071/jsxt/api/";
     public static String REGISTER =  SERVER_IP + "device?";//考勤终端注册接口

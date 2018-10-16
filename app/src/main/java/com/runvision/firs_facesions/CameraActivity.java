@@ -227,6 +227,12 @@ public class CameraActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        myCameraView.releaseCamera();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         myCameraView.releaseCamera();
