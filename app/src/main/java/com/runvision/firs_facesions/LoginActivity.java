@@ -231,7 +231,7 @@ public class LoginActivity extends FragmentActivity {
     private void login() {
         try {
             String privateKey = SPUtil.getString(Const.PRIVATE_KEY,"");
-            String devnum = SPUtil.getString(Const.DEVNUM,"");
+            String devnum = SPUtil.getString(Const.DEV_NUM,"");
             String username = etUser.getText().toString().trim();
             String passwd = etPassword.getText().toString().trim();
             String ts = TimeUtils.getTime13();

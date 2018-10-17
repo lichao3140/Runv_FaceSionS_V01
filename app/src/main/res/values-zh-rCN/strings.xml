@@ -29,6 +29,8 @@
     <string name="toast_server_error">服务器错误!</string>
     <string name="toast_face_verify_success">人脸验证成功!</string>
     <string name="toast_face_verify_faile">人脸验证失败!</string>
+    <string name="toast_update_success">更新成功!</string>
+    <string name="toast_update_fail">更新失败!</string>
     <string name="back">返回</string>
     <string name="sure">确定</string>
     <string name="cancel">取消</string>

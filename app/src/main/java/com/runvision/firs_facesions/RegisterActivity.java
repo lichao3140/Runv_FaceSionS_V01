@@ -105,10 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
                         if (!response.equals("resource/500")) {
                             DeviceResponse gsonData = gson.fromJson(response, DeviceResponse.class);
                             if (gsonData.getErrorcode() == 0) {
-                                String privateKey = gsonData.getData().getPrivateKey();
-                                String devnum = gsonData.getData().getDevnum();
-                                SPUtil.putString(Const.PRIVATE_KEY,privateKey);
-                                SPUtil.putString(Const.DEVNUM,devnum);
+                                SPUtil.putString(Const.DEV_INSCODE, etInscode.getText().toString().trim());
+                                SPUtil.putString(Const.PRIVATE_KEY, gsonData.getData().getPrivateKey());
+                                SPUtil.putString(Const.DEV_NUM, gsonData.getData().getDevnum());
                                 finish();
                                 Toasty.success(mContext, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
                             } else {

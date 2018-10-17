@@ -205,8 +205,6 @@ public class CameraActivity extends BaseActivity implements
                 .setPositive("更新参数",  v ->
                                 HttpAtndquery.Atndquery(context))
                 .setNegative("取消", null)
-                .setOnCancelListener(dialog ->
-                        Toasty.info(context, "取消！", Toast.LENGTH_SHORT, true).show())
                 .show(getSupportFragmentManager());
     }
 

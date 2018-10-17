@@ -29,6 +29,8 @@
     <string name="toast_server_error">Server Error!</string>
     <string name="toast_face_verify_success">Face Verify Success!</string>
     <string name="toast_face_verify_fail">Face Verify Fail!</string>
+    <string name="toast_update_success">Update Success!</string>
+    <string name="toast_update_fail">Update Fail!</string>
     <string name="back">Back</string>
     <string name="sure">Sure</string>
     <string name="cancel">Cancel</string>

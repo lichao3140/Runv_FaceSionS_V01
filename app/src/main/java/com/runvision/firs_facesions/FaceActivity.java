@@ -114,7 +114,7 @@ public class FaceActivity extends BaseActivity {
     private void adminLogin() {
         try {
             String privateKey = SPUtil.getString(Const.PRIVATE_KEY,"");
-            String devnum = SPUtil.getString(Const.DEVNUM,"");
+            String devnum = SPUtil.getString(Const.DEV_NUM,"");
             String username = SPUtil.getString("username", "");
             String ts = TimeUtils.getTime13();
             String sign = devnum + username +ts;
@@ -143,10 +143,10 @@ public class FaceActivity extends BaseActivity {
                                 if (gsonFace.getErrorcode().equals("0")) {
                                     Intent intent = new Intent(context, CameraActivity.class);
                                     startActivity(intent);
-                                    Toasty.error(context, getString(R.string.toast_face_verify_success), Toast.LENGTH_LONG, true).show();
+                                    Toasty.success(context, getString(R.string.toast_face_verify_success), Toast.LENGTH_LONG, true).show();
                                     finish();
                                 } else {
-                                    Toasty.error(context, getString(R.string.toast_face_verify_faile) + gsonFace.getMessage(), Toast.LENGTH_LONG, true).show();
+                                    Toasty.error(context, getString(R.string.toast_face_verify_fail) + gsonFace.getMessage(), Toast.LENGTH_LONG, true).show();
                                 }
                             } else {
                                 Toasty.error(context, getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
