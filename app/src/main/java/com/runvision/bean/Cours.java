@@ -74,4 +74,15 @@ public class Cours {
     public void setTargetlen(String targetlen) {
         this.targetlen = targetlen;
     }
+
+    @Override
+    public String toString() {
+        return "Cours{" +
+                "coursename='" + coursename + '\'' +
+                ", subject='" + subject + '\'' +
+                ", coursecode='" + coursecode + '\'' +
+                ", classcode='" + classcode + '\'' +
+                ", targetlen='" + targetlen + '\'' +
+                '}';
+    }
 }

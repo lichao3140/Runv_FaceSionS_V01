@@ -10,33 +10,55 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseSectionQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mylhyl.circledialog.CircleDialog;
 import com.runvision.HttpCallback.HttpAtndquery;
 import com.runvision.adapter.BaseAdapter;
 import com.runvision.adapter.MenuCardAdapter;
+import com.runvision.adapter.MySectionEntity;
+import com.runvision.adapter.PictureTypeEntity;
 import com.runvision.adapter.SignAdapter;
 import com.runvision.bean.AppData;
+import com.runvision.bean.Atnd;
+import com.runvision.bean.AtndResponse;
+import com.runvision.bean.Cours;
 import com.runvision.bean.Sign;
 import com.runvision.core.Const;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
 import com.runvision.utils.CameraHelp;
+import com.runvision.utils.RSAUtils;
+import com.runvision.utils.SPUtil;
+import com.runvision.utils.TimeUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import okhttp3.Call;
+import okhttp3.MediaType;
 
 
 public class CameraActivity extends BaseActivity implements
@@ -60,6 +82,7 @@ public class CameraActivity extends BaseActivity implements
     private ListView sign_listView;
     private UIThread uithread;
     private boolean signoutflag = false;
+    private DialogFragment dialogFragment;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -165,7 +188,8 @@ public class CameraActivity extends BaseActivity implements
 
                 break;
             case R.id.nav_config:
-                configDialog();
+//                configDialog();
+                Atndquery();
                 break;
             case R.id.nav_sign:
                 Intent sign = new Intent(context, SignRecordActivity.class);
@@ -313,12 +337,7 @@ public class CameraActivity extends BaseActivity implements
         }
         loadcardText.setText(showmessage);
         show_card.setVisibility(View.VISIBLE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                show_card.setVisibility(View.GONE);
-            }
-        }, 2000);
+        handler.postDelayed(() -> show_card.setVisibility(View.GONE), 2000);
     }
 
     private class UIThread extends Thread {
@@ -379,4 +398,100 @@ public class CameraActivity extends BaseActivity implements
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void Atndquery() {
+        try {
+            String inscode = SPUtil.getString(Const.DEV_INSCODE, "");
+            String privateKey = SPUtil.getString(Const.PRIVATE_KEY, "");
+            String devnum = SPUtil.getString(Const.DEV_NUM, "");
+            String ts = TimeUtils.getTime13();
+            String sign = inscode + devnum + ts;
+            byte[] ss = sign.getBytes();
+            String sign_str = RSAUtils.sign(ss, privateKey);
+
+            OkHttpUtils.postString()
+                    .url(Const.PARAMETER + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
+                    .content(new Gson().toJson(new Atnd(sign_str, inscode, devnum, ts)))
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Toasty.error(context, context.getString(R.string.toast_request_error), Toast.LENGTH_LONG, true).show();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+//                            Log.i("lichao", "success:" + response);
+                            if (!response.equals("resource/500")) {
+                                Gson gson = new Gson();
+                                AtndResponse gsonAtnd = gson.fromJson(response, AtndResponse.class);
+                                if (gsonAtnd.getErrorcode().equals("0")) {
+                                    showInfo(gsonAtnd.getData());
+                                    Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_LONG, true).show();
+                                } else {
+                                    Toasty.error(context, context.getString(R.string.toast_update_fail), Toast.LENGTH_LONG, true).show();
+                                }
+                            } else {
+                                Toasty.error(context, context.getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showInfo(String coursData) {
+        try {
+            Log.e("lichao", "coursData:" + coursData);
+            String[] heads = {"科目一", "科目四"};
+            ArrayList<MySectionEntity> listData = new ArrayList<>();
+            for (int i = 0; i < heads.length; i++) {
+                listData.add(new MySectionEntity(true, heads[i]));
+                for (int j = 0; j < (i == 0 ? 4 : 6); j++) {
+                    listData.add(new MySectionEntity(new PictureTypeEntity(j, heads[i] + "：" + j)));
+                }
+            }
+            final BaseQuickAdapter rvAdapter = new BaseSectionQuickAdapter<MySectionEntity, BaseViewHolder>(
+                    android.R.layout.simple_list_item_1, R.layout.item_cour, listData) {
+                @Override
+                protected void convertHead(BaseViewHolder helper, MySectionEntity item) {
+                    helper.setText(R.id.textView2, item.header);
+                }
+
+                @Override
+                protected void convert(BaseViewHolder helper, MySectionEntity item) {
+                    TextView textView = helper.getView(android.R.id.text1);
+                    textView.setText(item.t.typeName);
+                    textView.setGravity(Gravity.CENTER);
+                }
+
+            };
+
+            dialogFragment = new CircleDialog.Builder()
+                    .setGravity(Gravity.BOTTOM)
+                    .setRadius(0)
+                    .setWidth(1f)
+                    .setMaxHeight(0.8f)
+                    .setYoff(0)
+                    .setTitle("rvAdapter")
+                    .setSubTitle("副标题哦！")
+                    .setItems(rvAdapter, new LinearLayoutManager(context))
+                    .setNegative("关闭", null)
+                    .configNegative(params -> params.topMargin = 0)
+                    .show(getSupportFragmentManager());
+            rvAdapter.setOnItemClickListener((adapter1, view14, position14) -> {
+                Toast.makeText(context, "点击的是：" + adapter1.getData().get(position14), Toast.LENGTH_SHORT).show();
+                dialogFragment.dismiss();
+            });
+
+            Gson gson = new Gson();
+            List<Cours> coursList = gson.fromJson(coursData, new TypeToken<List<Cours>>(){}.getType());
+            for (Cours cours : coursList) {
+                Log.i("lichao", "coursename:" + cours.getCoursecode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -36,5 +36,12 @@ public class AtndResponse {
         this.errorcode = errorcode;
     }
 
-    
+    @Override
+    public String toString() {
+        return "AtndResponse{" +
+                "data='" + data + '\'' +
+                ", message='" + message + '\'' +
+                ", errorcode='" + errorcode + '\'' +
+                '}';
+    }
 }

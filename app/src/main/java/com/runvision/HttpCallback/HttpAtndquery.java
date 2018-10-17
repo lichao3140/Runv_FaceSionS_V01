@@ -1,21 +1,32 @@
 package com.runvision.HttpCallback;
 
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseSectionQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mylhyl.circledialog.CircleDialog;
+import com.runvision.adapter.MySectionEntity;
+import com.runvision.adapter.PictureTypeEntity;
 import com.runvision.bean.Atnd;
 import com.runvision.bean.AtndResponse;
+import com.runvision.bean.Cours;
 import com.runvision.core.Const;
 import com.runvision.firs_facesions.R;
 import com.runvision.utils.RSAUtils;
 import com.runvision.utils.SPUtil;
-import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
+import java.util.ArrayList;
+import java.util.List;
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -27,15 +38,13 @@ public class HttpAtndquery {
 
     public static void Atndquery(Context context) {
         try {
-            String inscode = SPUtil.getString(Const.DEV_INSCODE,"");
-            String privateKey = SPUtil.getString(Const.PRIVATE_KEY,"");
-            String devnum = SPUtil.getString(Const.DEV_NUM,"");
+            String inscode = SPUtil.getString(Const.DEV_INSCODE, "");
+            String privateKey = SPUtil.getString(Const.PRIVATE_KEY, "");
+            String devnum = SPUtil.getString(Const.DEV_NUM, "");
             String ts = TimeUtils.getTime13();
             String sign = inscode + devnum + ts;
             byte[] ss = sign.getBytes();
             String sign_str = RSAUtils.sign(ss, privateKey);
-
-            Log.i("lichao", "inscode:" + inscode);
 
             OkHttpUtils.postString()
                     .url(Const.PARAMETER + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
@@ -50,7 +59,7 @@ public class HttpAtndquery {
 
                         @Override
                         public void onResponse(String response, int id) {
-                            Log.i("lichao", "success:" + response);
+//                            Log.i("lichao", "success:" + response);
                             if (!response.equals("resource/500")) {
                                 Gson gson = new Gson();
                                 AtndResponse gsonAtnd = gson.fromJson(response, AtndResponse.class);
@@ -69,4 +78,5 @@ public class HttpAtndquery {
             e.printStackTrace();
         }
     }
+
 }
