@@ -21,11 +21,14 @@
     <string name="toast_login_success">Login Success!</string>
     <string name="toast_login_error">Login Error!</string>
     <string name="toast_login_error_code">Login Error Code:</string>
+    <string name="toast_login_error_no_face">Not Have Face Info</string>
     <string name="toast_register_success">Register Success!</string>
     <string name="toast_register_error">Register Error!</string>
     <string name="toast_register_error_code">Register Error Code:</string>
     <string name="toast_request_error">Request Error!</string>
     <string name="toast_server_error">Server Error!</string>
+    <string name="toast_face_verify_success">Face Verify Success!</string>
+    <string name="toast_face_verify_fail">Face Verify Fail!</string>
     <string name="back">Back</string>
     <string name="sure">Sure</string>
     <string name="cancel">Cancel</string>

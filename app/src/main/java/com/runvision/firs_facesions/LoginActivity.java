@@ -15,6 +15,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -26,19 +27,24 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.face.sv.FaceInfo;
 import com.github.ybq.android.spinkit.style.Wave;
 import com.google.gson.Gson;
 import com.runvision.bean.Login;
 import com.runvision.bean.LoginResponse;
 import com.runvision.core.Const;
+import com.runvision.core.MyApplication;
 import com.runvision.utils.FileUtils;
 import com.runvision.utils.IDUtils;
 import com.runvision.utils.LogUtil;
 import com.runvision.utils.RSAUtils;
+import com.runvision.utils.SPUtil;
 import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -86,7 +92,6 @@ public class LoginActivity extends FragmentActivity {
     private float scale = 0.6f; //logo缩放比例
 
     private ProgressBar progressBar;
-    private SharedPreferencesHelper sharedPreferencesHelper;
     private SharedPreferencesHelper faceSP;
     private Context mContext;
 
@@ -100,7 +105,6 @@ public class LoginActivity extends FragmentActivity {
         screenHeight = this.getResources().getDisplayMetrics().heightPixels; //获取屏幕高度
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
         mContext = this;
-        sharedPreferencesHelper = new SharedPreferencesHelper(mContext, "deviceInfo");
         faceSP = new SharedPreferencesHelper(mContext, "faceInfo");
         initListener();
         initData();
@@ -226,8 +230,8 @@ public class LoginActivity extends FragmentActivity {
      */
     private void login() {
         try {
-            String privateKey = sharedPreferencesHelper.getSharedPreference("privateKey", "").toString().trim();
-            String devnum = sharedPreferencesHelper.getSharedPreference("devnum", "").toString().trim();
+            String privateKey = SPUtil.getString(Const.PRIVATE_KEY,"");
+            String devnum = SPUtil.getString(Const.DEVNUM,"");
             String username = etUser.getText().toString().trim();
             String passwd = etPassword.getText().toString().trim();
             String ts = TimeUtils.getTime13();
@@ -243,32 +247,39 @@ public class LoginActivity extends FragmentActivity {
                     .execute(new StringCallback() {
 
                         @Override
-                        public void inProgress(float progress, long total, int id) {
-                            super.inProgress(progress, total, id);
-                        }
-
-                        @Override
                         public void onError(Call call, Exception e, int id) {
+                            progressBar.setVisibility(View.INVISIBLE);
                             Toasty.error(mContext, getString(R.string.toast_request_error), Toast.LENGTH_LONG, true).show();
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
-                            LogUtil.i("lichao", "success:" + response);
+//                            LogUtil.i("lichao", "success:" + response);
                             if (!response.equals("resource/500")) {
                                 LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                                 if (gsonLogin.getErrorcode() == 0) {
-                                    // 将人脸Base64数据保存
-                                    faceSP.put("face", gsonLogin.getData().getFace());
-                                    addFace(gsonLogin.getData().getFace());
-                                    Intent intent = new Intent(mContext, FaceActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                    Toasty.success(mContext, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                                    if (gsonLogin.getData().getFace() != null) {
+                                        SPUtil.putString("username", username);
+                                        SPUtil.putString("passwd", passwd);
+                                        faceSP.put("face", gsonLogin.getData().getFace());
+                                        addFace(gsonLogin.getData().getFace());
+                                        Intent intent = new Intent(mContext, FaceActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        Toasty.success(mContext, getString(R.string.toast_login_success), Toast.LENGTH_SHORT, true).show();
+                                    } else {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        Toasty.error(mContext, getString(R.string.toast_login_error_no_face), Toast.LENGTH_LONG, true).show();
+                                    }
+                                }  else if (gsonLogin.getErrorcode() == 1) {
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    Toasty.error(mContext, getString(R.string.toast_login_error) + gsonLogin.getMessage(), Toast.LENGTH_LONG, true).show();
                                 } else {
+                                    progressBar.setVisibility(View.INVISIBLE);
                                     Toasty.error(mContext, getString(R.string.toast_login_error_code) + gsonLogin.getErrorcode(), Toast.LENGTH_LONG, true).show();
                                 }
                             } else {
+                                progressBar.setVisibility(View.INVISIBLE);
                                 Toasty.error(mContext, getString(R.string.toast_server_error), Toast.LENGTH_LONG, true).show();
                             }
                         }
@@ -280,6 +291,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * 保存人脸模板
+     *
      * @param faceInfo
      */
     private void addFace(String faceInfo) {
@@ -287,13 +299,28 @@ public class LoginActivity extends FragmentActivity {
             Toasty.warning(mContext, "获取模板图片失败", Toast.LENGTH_SHORT, true).show();
             return;
         }
-        if (!faceInfo.equals(faceSP.getSharedPreference("face", "").toString().trim())) {
-            //保存图片
-            //生成随机图片ID
-            String imageID = IDUtils.genImageName();
-            byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
-            Bitmap faceBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
-            FileUtils.saveFile(faceBitmap, imageID, Const.TEMP_DIR);
+        byte[] decode = Base64.decode(faceInfo, Base64.DEFAULT);
+        Bitmap faceBitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+        insertTemplate(faceBitmap);
+        if (insertTemplate(faceBitmap).equals("success")) {
+            Log.i("Gavin", "模板success");
+        } else {
+            Log.i("Gavin", "模板error");
+        }
+    }
+
+    private String insertTemplate(Bitmap bmp) {
+        //转RGB
+        byte[] mBGR = FileUtils.bitmapToBGR24(bmp);
+        FaceInfo faceInfoKj = MyApplication.mDetect.getFacePositionScaleFromGray(mBGR, bmp.getWidth(), bmp.getHeight(), 5);
+        if (faceInfoKj.getRet() != 1) {
+            return "检测不到人脸";
+        }
+        int ret = MyApplication.mRecognize.registerFaceFeature(1, mBGR, bmp.getWidth(), bmp.getHeight(), faceInfoKj.getFacePosData(0));
+        if (ret > 0) {
+            return "success";
+        } else {
+            return "注册人脸异常,错误码:" + ret;
         }
     }
 
@@ -341,4 +368,5 @@ public class LoginActivity extends FragmentActivity {
         super.onDestroy();
         android.os.Debug.stopMethodTracing();
     }
+
 }

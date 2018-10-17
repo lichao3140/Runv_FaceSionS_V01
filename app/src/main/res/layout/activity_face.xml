@@ -28,10 +28,4 @@
         android:layout_centerInParent="true"
         layout="@layout/layout_tip"/>
 
-    <ImageView
-        android:id="@+id/iv_face"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
-
 </android.support.constraint.ConstraintLayout>

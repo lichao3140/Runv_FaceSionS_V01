@@ -15,6 +15,7 @@ import com.runvision.bean.DeviceResponse;
 import com.runvision.core.Const;
 import com.runvision.utils.LocationUtils;
 import com.runvision.utils.MACUtil;
+import com.runvision.utils.SPUtil;
 import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -57,7 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
             String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
             Log.i("lichao", "address:" + address);
         }
-        sharedPreferencesHelper = new SharedPreferencesHelper(mContext, "deviceInfo");
         initData();
     }
 
@@ -107,14 +107,8 @@ public class RegisterActivity extends AppCompatActivity {
                             if (gsonData.getErrorcode() == 0) {
                                 String privateKey = gsonData.getData().getPrivateKey();
                                 String devnum = gsonData.getData().getDevnum();
-                                sharedPreferencesHelper.put("privateKey", privateKey);
-                                sharedPreferencesHelper.put("devnum",devnum);
-                                sharedPreferencesHelper.put("inscode", etInscode.getText().toString().trim());
-                                sharedPreferencesHelper.put("termtype", etTermtype.getText().toString().trim());
-                                sharedPreferencesHelper.put("vender", etVender.getText().toString().trim());
-                                sharedPreferencesHelper.put("model", etModel.getText().toString().trim());
-                                sharedPreferencesHelper.put("gps", "15|56");
-                                sharedPreferencesHelper.put("imei", etImei.getText().toString());
+                                SPUtil.putString(Const.PRIVATE_KEY,privateKey);
+                                SPUtil.putString(Const.DEVNUM,devnum);
                                 finish();
                                 Toasty.success(mContext, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();
                             } else {

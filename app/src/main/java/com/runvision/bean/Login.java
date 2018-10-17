@@ -8,6 +8,13 @@ public class Login {
     private String passwd;
     private String ts;
 
+    public Login(String sign, String devnum, String username, String ts) {
+        this.sign = sign;
+        this.devnum = devnum;
+        this.username = username;
+        this.ts = ts;
+    }
+
     public Login(String sign, String devnum, String username, String passwd, String ts) {
         this.sign = sign;
         this.devnum = devnum;

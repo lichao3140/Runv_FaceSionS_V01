@@ -21,11 +21,14 @@
     <string name="toast_login_success">登录成功!</string>
     <string name="toast_login_error">登录失败!</string>
     <string name="toast_login_error_code">登录失败,错误码:</string>
+    <string name="toast_login_error_no_face">该用户在管理端没发现人脸信息,请先联系管理员采集人脸信息!</string>
     <string name="toast_register_success">注册成功!</string>
     <string name="toast_register_error">注册失败!</string>
     <string name="toast_register_error_code">注册失败,错误码:</string>
     <string name="toast_request_error">请求失败,请检测网络!</string>
     <string name="toast_server_error">服务器错误!</string>
+    <string name="toast_face_verify_success">人脸验证成功!</string>
+    <string name="toast_face_verify_faile">人脸验证失败!</string>
     <string name="back">返回</string>
     <string name="sure">确定</string>
     <string name="cancel">取消</string>
