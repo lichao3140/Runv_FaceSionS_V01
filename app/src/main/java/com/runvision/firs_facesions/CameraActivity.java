@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -453,25 +454,39 @@ public class CameraActivity extends BaseActivity implements
                 Log.i("lichao", "targetlen:" + cours.getTargetlen());
             }
             ArrayList<MySectionEntity> listData = new ArrayList<>();
-            for (int i = 0; i < heads.length; i++) {
-                listData.add(new MySectionEntity(true, heads[i]));
-                for (int j = 0; j < (i == 0 ? 4 : 6); j++) {
-                    listData.add(new MySectionEntity(new PictureTypeEntity(j, heads[i] + "：" + j)));
-                }
+            for (int i = 0; i < coursList.size(); i++) {
+                listData.add(new MySectionEntity(true, coursList.get(i).getClasscode()));
+//                listData.add(new MySectionEntity(new PictureTypeEntity(i, coursList.get(i).getCoursename(),
+//                        coursList.get(i).getClasscode(), coursList.get(i).getCoursecode(), coursList.get(i).getSubject(), coursList.get(i).getTargetlen())));
+
+//                for (int j = 0; j < coursList.size(); j++) {
+//                    Log.i("lichao", "==========" + coursList.get(j).getCoursename());
+//                    listData.add(new MySectionEntity(new PictureTypeEntity(j, heads[i] + "：" + j)));
+////                    listData.add(new MySectionEntity(new PictureTypeEntity(j, coursList.get(j).getCoursename(),
+////                            coursList.get(j).getClasscode(), coursList.get(j).getCoursecode(), coursList.get(j).getSubject(), coursList.get(j).getTargetlen())));
+//                }
             }
             final BaseQuickAdapter rvAdapter = new BaseSectionQuickAdapter<MySectionEntity, BaseViewHolder>(
-                    android.R.layout.simple_list_item_1, R.layout.item_cour_title, listData) {
+                    android.R.layout.simple_list_item_1, R.layout.item_cour, listData) {
+
                 @Override
                 protected void convertHead(BaseViewHolder helper, MySectionEntity item) {
-                    helper.setText(R.id.tv_cour_title, item.header);
+                   // helper.setText(R.id.tv_cour_title, item.header);
+                    helper.setText(R.id.tv_classcode, item.header);
+//                    helper.setText(R.id.tv_coursecode, item.header);
+//                    helper.setText(R.id.tv_coursename, item.header);
                 }
 
                 @Override
                 protected void convert(BaseViewHolder helper, MySectionEntity item) {
-                    TextView tv_Title = helper.getView(android.R.id.text1);
+//                    TextView tv_Title = helper.getView(android.R.id.text1);
+//                    TextView tv_classcode = helper.getView(R.id.tv_classcode);
 //                    TextView tv_coursecode = helper.getView(R.id.tv_coursecode);
 //                    TextView tv_coursename = helper.getView(R.id.tv_coursename);
-                    tv_Title.setText(item.t.typeName);
+//
+//                    tv_classcode.setText(item.t.classcode);
+//                    tv_coursecode.setText(item.t.coursecode);
+//                    tv_coursename.setText(item.t.coursename);
                 }
 
             };
@@ -488,8 +503,9 @@ public class CameraActivity extends BaseActivity implements
                     .configNegative(params -> params.topMargin = 0)
                     .show(getSupportFragmentManager());
             rvAdapter.setOnItemClickListener((adapter1, view14, position14) -> {
-                Toast.makeText(context, "点击的是：" + adapter1.getData().get(position14), Toast.LENGTH_SHORT).show();
-                dialogFragment.dismiss();
+                view14.setBackgroundColor(Color.rgb(213, 0, 0));
+                Toast.makeText(context, "点击的是：" + adapter1.getData().get(position14).toString(), Toast.LENGTH_SHORT).show();
+                //dialogFragment.dismiss();
             });
         } catch (Exception e) {
             e.printStackTrace();

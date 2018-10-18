@@ -16,4 +16,5 @@ public class PictureTypeEntity {
     public String toString() {
         return typeName;
     }
+
 }

@@ -100,9 +100,4 @@ public class Const {
     public static String STULOGOUT = SERVER_IP + "stulogout?";
 
 
-
-
-    public static String PUB_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZBsW9UdhtqjKAHi66tfn6jYWnyRFp+0bTU1lU+f5Bp67q5+Khj+hOROdOm0ILXk6At8iNH4IfnUqFLu7GWD2g9uyc64TWRZZzqLl1fzVQB+lse+LzzNaxD6hiAGXehqABVYCAMmjPfKtJQGY1dJ+87JeDfBG8Vm1i2/TbiY+kmwIDAQAB";
-
-
 }
