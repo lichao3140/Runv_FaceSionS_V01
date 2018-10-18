@@ -121,9 +121,6 @@ public class FaceActivity extends BaseActivity {
             byte[] ss = sign.getBytes();
             String sign_str = RSAUtils.sign(ss, privateKey);
 
-            Log.e("lichao", "URL:" + Const.FACE_WITNESS + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str);
-            Log.e("lichao", "JSON:" + new Gson().toJson(new Login(sign_str, devnum, username, ts)));
-
             OkHttpUtils.postString()
                     .url(Const.FACE_WITNESS + "ts=" + TimeUtils.getTime13() + "&sign=" + sign_str)
                     .content(new Gson().toJson(new Login(sign_str, devnum, username, ts)))

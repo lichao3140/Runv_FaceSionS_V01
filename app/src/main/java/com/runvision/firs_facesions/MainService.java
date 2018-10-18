@@ -18,6 +18,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.runvision.HttpCallback.HttpStudent;
 import com.runvision.bean.AppData;
 import com.runvision.core.Const;
 import com.runvision.core.DBAdapter;
@@ -26,7 +27,10 @@ import com.runvision.thread.ToHttpThread;
 import com.runvision.utils.CameraHelp;
 import com.runvision.utils.JsonTools;
 import com.runvision.utils.LogToFile;
+import com.runvision.utils.SPUtil;
 import com.runvision.utils.TimeCompareUtil;
+import com.runvision.utils.TimeUtils;
+import com.runvision.utils.UUIDUtil;
 import com.zkteco.android.IDReader.IDPhotoHelper;
 import com.zkteco.android.IDReader.WLTService;
 import com.zkteco.android.biometric.core.device.ParameterHelper;
@@ -250,23 +254,19 @@ public class MainService extends Service {
             Log.i("Gavin", "签到时间未到");
         } else if (timecompare.TimeCompare(AppData.getAppData().getInstarttime(), AppData.getAppData().getInendtime(), currentTime)) {
             //签到需要显示签到信息
+            AppData.getAppData().setDevnum(SPUtil.getString(Const.DEV_NUM, ""));
             AppData.getAppData().setTime(currentTime);
             AppData.getAppData().setStucode(idCardInfo.getId());
-            AppData.getAppData().setCardtype(1);
+            AppData.getAppData().setCardtype("1");
             AppData.getAppData().setGps("15|56");
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
-            //AppData.getAppData().setClasscode();
-            //AppData.getAppData().setSn();
+            AppData.getAppData().setClasscode("100735518626680832");
+            AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
-            String postdate1 = mJsonTools.parseJSONWithString(5);
-            // Log.d("Gavin",postdate);
-            ToHttpThread mPostDateThread1 = new ToHttpThread(Const.LOGIN, postdate1);
-            mPostDateThread1.start();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            HttpStudent.Stulogin(mContext, AppData.getAppData().getDevnum(), AppData.getAppData().getTime(), AppData.getAppData().getStucode(),
+                    AppData.getAppData().getCardtype(), AppData.getAppData().getGps(), AppData.getAppData().getImgstr(),
+                    AppData.getAppData().getClasscode(), AppData.getAppData().getSn(), AppData.getAppData().getStudentName());
 
             timeflag = 2;
             operation_Sign_in(idCardInfo, currentTime);
@@ -276,23 +276,19 @@ public class MainService extends Service {
             Log.i("Gavin", "签到已过，签退未到");
         } else if (timecompare.TimeCompare(AppData.getAppData().getOutstarttime(), AppData.getAppData().getOutendtime(), currentTime)) {
             //签退需要显示签退信息
+            AppData.getAppData().setDevnum(SPUtil.getString(Const.DEV_NUM, ""));
             AppData.getAppData().setTime(currentTime);
             AppData.getAppData().setStucode(idCardInfo.getId());
-            AppData.getAppData().setCardtype(1);
+            AppData.getAppData().setCardtype("1");
             AppData.getAppData().setGps("15|56");
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
-            //AppData.getAppData().setClasscode();
-            //AppData.getAppData().setSn();
+            AppData.getAppData().setClasscode("100735518626680832");
+            AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
-            String postdate1 = mJsonTools.parseJSONWithString(6);
-            // Log.d("Gavin",postdate);
-            ToHttpThread mPostDateThread1 = new ToHttpThread(Const.LOGIN, postdate1);
-            mPostDateThread1.start();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+            HttpStudent.Stulogout(mContext, AppData.getAppData().getDevnum(), AppData.getAppData().getTime(), AppData.getAppData().getStucode(),
+            AppData.getAppData().getCardtype(), AppData.getAppData().getGps(), AppData.getAppData().getImgstr(),
+            AppData.getAppData().getClasscode(), AppData.getAppData().getSn(), 0, AppData.getAppData().getStudentName());
 
             //需要删除签到信息
             operation_Sign_back(idCardInfo);

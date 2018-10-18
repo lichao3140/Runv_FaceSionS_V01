@@ -26,12 +26,12 @@ public class AppData {
     private String starttime="2018-10-11 08:00:00";//课堂开始时间
     private String endtime="2018-10-19 24:00:00";//课堂关闭时间
     private String instarttime="2018-10-11 09:30:00";//签到开始时间
-    private String inendtime="2018-10-19 20:30:00";//签到结束时间
+    private String inendtime="2018-10-16 20:30:00";//签到结束时间
     private String outstarttime="2018-10-11 21:10:00";//签退开始时间
     private String outendtime="2018-10-19 22:30:00";//签退结束时间
     private int interval;//签到间隔(秒)
 
-    private int cardtype;//证件类型
+    private String cardtype;//证件类型
 
     private String time;//学员登录时间
     private String stucode;//学员编号
@@ -280,11 +280,11 @@ public class AppData {
         this.interval = interval;
     }
 
-    public int getCardtype() {
+    public String getCardtype() {
         return cardtype;
     }
 
-    public void setCardtype(int cardtype) {
+    public void setCardtype(String cardtype) {
         this.cardtype = cardtype;
     }
 

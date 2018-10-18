@@ -421,7 +421,6 @@ public class CameraActivity extends BaseActivity implements
 
                         @Override
                         public void onResponse(String response, int id) {
-//                            Log.i("lichao", "success:" + response);
                             if (!response.equals("resource/500")) {
                                 Gson gson = new Gson();
                                 AtndResponse gsonAtnd = gson.fromJson(response, AtndResponse.class);
@@ -443,8 +442,16 @@ public class CameraActivity extends BaseActivity implements
 
     private void showInfo(String coursData) {
         try {
-            Log.e("lichao", "coursData:" + coursData);
-            String[] heads = {"科目一", "科目四"};
+            String[] heads = {"培训科目:第一部分", "培训科目:第四部分"};
+            Gson gson = new Gson();
+            List<Cours> coursList = gson.fromJson(coursData, new TypeToken<List<Cours>>(){}.getType());
+            for (Cours cours : coursList) {
+                Log.i("lichao", "coursename:" + cours.getCoursename());
+                Log.i("lichao", "classcode:" + cours.getClasscode());
+                Log.i("lichao", "coursecode:" + cours.getCoursecode());
+                Log.i("lichao", "subject:" + cours.getSubject());
+                Log.i("lichao", "targetlen:" + cours.getTargetlen());
+            }
             ArrayList<MySectionEntity> listData = new ArrayList<>();
             for (int i = 0; i < heads.length; i++) {
                 listData.add(new MySectionEntity(true, heads[i]));
@@ -453,17 +460,18 @@ public class CameraActivity extends BaseActivity implements
                 }
             }
             final BaseQuickAdapter rvAdapter = new BaseSectionQuickAdapter<MySectionEntity, BaseViewHolder>(
-                    android.R.layout.simple_list_item_1, R.layout.item_cour, listData) {
+                    android.R.layout.simple_list_item_1, R.layout.item_cour_title, listData) {
                 @Override
                 protected void convertHead(BaseViewHolder helper, MySectionEntity item) {
-                    helper.setText(R.id.textView2, item.header);
+                    helper.setText(R.id.tv_cour_title, item.header);
                 }
 
                 @Override
                 protected void convert(BaseViewHolder helper, MySectionEntity item) {
-                    TextView textView = helper.getView(android.R.id.text1);
-                    textView.setText(item.t.typeName);
-                    textView.setGravity(Gravity.CENTER);
+                    TextView tv_Title = helper.getView(android.R.id.text1);
+//                    TextView tv_coursecode = helper.getView(R.id.tv_coursecode);
+//                    TextView tv_coursename = helper.getView(R.id.tv_coursename);
+                    tv_Title.setText(item.t.typeName);
                 }
 
             };
@@ -474,8 +482,7 @@ public class CameraActivity extends BaseActivity implements
                     .setWidth(1f)
                     .setMaxHeight(0.8f)
                     .setYoff(0)
-                    .setTitle("rvAdapter")
-                    .setSubTitle("副标题哦！")
+                    .setTitle("考勤参数")
                     .setItems(rvAdapter, new LinearLayoutManager(context))
                     .setNegative("关闭", null)
                     .configNegative(params -> params.topMargin = 0)
@@ -484,12 +491,6 @@ public class CameraActivity extends BaseActivity implements
                 Toast.makeText(context, "点击的是：" + adapter1.getData().get(position14), Toast.LENGTH_SHORT).show();
                 dialogFragment.dismiss();
             });
-
-            Gson gson = new Gson();
-            List<Cours> coursList = gson.fromJson(coursData, new TypeToken<List<Cours>>(){}.getType());
-            for (Cours cours : coursList) {
-                Log.i("lichao", "coursename:" + cours.getCoursecode());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
