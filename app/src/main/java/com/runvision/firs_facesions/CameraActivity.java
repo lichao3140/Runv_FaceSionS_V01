@@ -471,7 +471,6 @@ public class CameraActivity extends BaseActivity implements
 
                 @Override
                 protected void convertHead(BaseViewHolder helper, MySectionEntity item) {
-                   // helper.setText(R.id.tv_cour_title, item.header);
                     helper.setText(R.id.tv_classcode, item.header);
 //                    helper.setText(R.id.tv_coursecode, item.header);
 //                    helper.setText(R.id.tv_coursename, item.header);
@@ -479,7 +478,6 @@ public class CameraActivity extends BaseActivity implements
 
                 @Override
                 protected void convert(BaseViewHolder helper, MySectionEntity item) {
-//                    TextView tv_Title = helper.getView(android.R.id.text1);
 //                    TextView tv_classcode = helper.getView(R.id.tv_classcode);
 //                    TextView tv_coursecode = helper.getView(R.id.tv_coursecode);
 //                    TextView tv_coursename = helper.getView(R.id.tv_coursename);
