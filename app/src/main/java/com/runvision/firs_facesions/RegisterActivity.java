@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.runvision.bean.Device;
 import com.runvision.bean.DeviceResponse;
@@ -16,10 +17,10 @@ import com.runvision.core.Const;
 import com.runvision.utils.LocationUtils;
 import com.runvision.utils.MACUtil;
 import com.runvision.utils.SPUtil;
-import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -37,13 +38,16 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etVender;
     @BindView(R.id.et_model)
     EditText etModel;
+    @BindView(R.id.et_gps_lon)
+    EditText etGpsLon;
+    @BindView(R.id.et_gps_lat)
+    EditText etGpsLat;
     @BindView(R.id.et_imei)
     EditText etImei;
     @BindView(R.id.bt_register)
     Button btRegister;
 
     public Location location;
-    private SharedPreferencesHelper sharedPreferencesHelper;
     private Context mContext;
     Gson gson = new Gson();
 
@@ -66,6 +70,8 @@ public class RegisterActivity extends AppCompatActivity {
         etTermtype.setText("1");
         etVender.setText("山东济南");
         etModel.setText("test0001");
+        etGpsLon.setText("15");
+        etGpsLat.setText("16");
         etImei.setText(MACUtil.getLocalMacAddressFromWifiInfo(mContext));
     }
 
@@ -82,6 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
      * 考勤终端注册
      */
     private void deviceRegister() {
+        String gps = etGpsLon.getText().toString().trim() + "|" + etGpsLat.getText().toString().trim();
         OkHttpUtils.postString()
                 .url(Const.REGISTER + "ts=" + TimeUtils.getTime13())
                 .content(new Gson().toJson(new Device(
@@ -89,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Integer.valueOf(etTermtype.getText().toString()),
                         etVender.getText().toString().trim(),
                         etModel.getText().toString().trim(),
-                        "15|56",
+                        gps,
                         etImei.getText().toString())))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .build()
@@ -107,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (gsonData.getErrorcode() == 0) {
                                 SPUtil.putString(Const.DEV_INSCODE, etInscode.getText().toString().trim());
                                 SPUtil.putString(Const.PRIVATE_KEY, gsonData.getData().getPrivateKey());
+                                SPUtil.putString(Const.DEV_GPS, gps);
                                 SPUtil.putString(Const.DEV_NUM, gsonData.getData().getDevnum());
                                 finish();
                                 Toasty.success(mContext, getString(R.string.toast_register_success), Toast.LENGTH_SHORT, true).show();

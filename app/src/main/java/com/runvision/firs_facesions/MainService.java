@@ -263,7 +263,7 @@ public class MainService extends Service {
             AppData.getAppData().setTime(currentTime);
             AppData.getAppData().setStucode(idCardInfo.getId());
             AppData.getAppData().setCardtype("1");
-            AppData.getAppData().setGps("15|56");
+            AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
             AppData.getAppData().setClasscode("100735518626680832");
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
@@ -285,7 +285,7 @@ public class MainService extends Service {
             AppData.getAppData().setTime(currentTime);
             AppData.getAppData().setStucode(idCardInfo.getId());
             AppData.getAppData().setCardtype("1");
-            AppData.getAppData().setGps("15|56");
+            AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
             AppData.getAppData().setClasscode("100735518626680832");
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());

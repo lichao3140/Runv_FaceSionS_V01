@@ -43,6 +43,7 @@ public class Const {
     public static String DEV_INSCODE = "inscode";
     public static String PRIVATE_KEY = "privateKey";
     public static String DEV_NUM = "devnum";
+    public static String DEV_GPS = "gps";
 
     public static String CARD_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Card/";
     public static String FACE_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/";

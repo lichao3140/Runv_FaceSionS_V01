@@ -15,6 +15,8 @@
     <string name="register_time_type">计时终端类型:</string>
     <string name="register_manufacturer_factory">生产厂家:</string>
     <string name="register_device_type">终端型号:</string>
+    <string name="register_device_gps_lon">GPS坐标经度:</string>
+    <string name="register_device_gps_lat">GPS坐标纬度:</string>
     <string name="register_mac_address">设备MAC地址:</string>
     <string name="button_sure">确&#160;&#160;&#160;&#160;认</string>
     <string name="button_cancel">取&#160;&#160;&#160;&#160;消</string>

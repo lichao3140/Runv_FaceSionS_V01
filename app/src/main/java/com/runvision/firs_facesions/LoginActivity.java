@@ -217,10 +217,14 @@ public class LoginActivity extends FragmentActivity {
                     etPassword.setSelection(pwd.length());
                 break;
             case R.id.btn_login:
-                progressBar.setVisibility(View.VISIBLE);
-                Wave doubleBounce = new Wave();
-                progressBar.setIndeterminateDrawable(doubleBounce);
-                login();
+                if (!SPUtil.getString(Const.DEV_NUM,"").equals("")) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    Wave doubleBounce = new Wave();
+                    progressBar.setIndeterminateDrawable(doubleBounce);
+                    login();
+                } else {
+                    Toasty.error(mContext, "请先注册考勤终端", Toast.LENGTH_LONG, true).show();
+                }
                 break;
         }
     }

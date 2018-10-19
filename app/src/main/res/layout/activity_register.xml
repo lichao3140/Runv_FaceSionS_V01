@@ -40,6 +40,7 @@
             android:id="@+id/et_inscode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="请输培训机构编号"
             android:textSize="16dp" />
     </LinearLayout>
@@ -66,6 +67,8 @@
             android:id="@+id/et_termtype"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="1"
             android:hint="请输入计时终端类型"
             android:textSize="16dp" />
     </LinearLayout>
@@ -123,10 +126,54 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_imei"
+        android:id="@+id/ll_gps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_model"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingRight="5dp"
+            android:text="@string/register_device_gps_lon" />
+
+        <EditText
+            android:id="@+id/et_gps_lon"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"
+            android:hint="请输入两位经度"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingRight="5dp"
+            android:text="@string/register_device_gps_lat" />
+
+        <EditText
+            android:id="@+id/et_gps_lat"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="2"
+            android:hint="请输入两位纬度"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_imei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_gps"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

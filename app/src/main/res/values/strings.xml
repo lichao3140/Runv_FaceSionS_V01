@@ -15,6 +15,8 @@
     <string name="register_time_type">Time Device Type:</string>
     <string name="register_manufacturer_factory">Manufacturer Factory:</string>
     <string name="register_device_type">Device Type</string>
+    <string name="register_device_gps_lon">GPS Lon:</string>
+    <string name="register_device_gps_lat">GPS Lat:</string>
     <string name="register_mac_address">Device Mac Address</string>
     <string name="button_sure">Sure</string>
     <string name="button_cancel">Cancel</string>
