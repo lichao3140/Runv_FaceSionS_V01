@@ -40,10 +40,14 @@ public class Const {
 
     public final static int UPDATE_UI=1000;
 
+    /**
+     * 存放到SP里
+     */
     public static String DEV_INSCODE = "inscode";
     public static String PRIVATE_KEY = "privateKey";
     public static String DEV_NUM = "devnum";
     public static String DEV_GPS = "gps";
+    public static String SELECT_COURSE_NAME = "select_course_name";
 
     public static String CARD_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Card/";
     public static String FACE_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/";

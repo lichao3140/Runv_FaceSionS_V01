@@ -17,15 +17,12 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.runvision.HttpCallback.HttpStudent;
 import com.runvision.bean.AppData;
 import com.runvision.core.Const;
 import com.runvision.core.DBAdapter;
 import com.runvision.core.FaceIDCardCompareLib;
-import com.runvision.thread.ToHttpThread;
 import com.runvision.utils.CameraHelp;
-import com.runvision.utils.JsonTools;
 import com.runvision.utils.LogToFile;
 import com.runvision.utils.SPUtil;
 import com.runvision.utils.TimeCompareUtil;
@@ -40,11 +37,10 @@ import com.zkteco.android.biometric.module.idcard.IDCardReader;
 import com.zkteco.android.biometric.module.idcard.IDCardReaderFactory;
 import com.zkteco.android.biometric.module.idcard.exception.IDCardReaderException;
 import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import android_serialport_api.SerialPort;
+
 
 public class MainService extends Service {
 
@@ -69,7 +65,6 @@ public class MainService extends Service {
         return myService;
     }
 
-    private JsonTools mJsonTools = new JsonTools();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -101,7 +96,6 @@ public class MainService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
         return super.onStartCommand(intent, flags, startId);
-
     }
 
     private void startIDCardReader() {
@@ -163,38 +157,36 @@ public class MainService extends Service {
             idCardReader.open(0);
             bStop = false;
             Log.i(TAG, "设备连接成功");
-            new Thread(new Runnable() {
-                public void run() {
-                    while (!bStop) {
-                        long begin = System.currentTimeMillis();
-                        IDCardInfo idCardInfo = new IDCardInfo();
-                        boolean ret = false;
-                        try {
+            new Thread(() -> {
+                while (!bStop) {
+                    long begin = System.currentTimeMillis();
+                    IDCardInfo idCardInfo = new IDCardInfo();
+                    boolean ret = false;
+                    try {
 
-                            idCardReader.findCard(0);
-                            idCardReader.selectCard(0);
-                        } catch (IDCardReaderException e) {
-                            continue;
-                        }
-                        try {
-                            ret = idCardReader.readCard(0, 0, idCardInfo);
-                        } catch (IDCardReaderException e) {
-                            Log.i(TAG, "读卡失败，错误信息：" + e.getMessage());
-                        }
+                        idCardReader.findCard(0);
+                        idCardReader.selectCard(0);
+                    } catch (IDCardReaderException e) {
+                        continue;
+                    }
+                    try {
+                        ret = idCardReader.readCard(0, 0, idCardInfo);
+                    } catch (IDCardReaderException e) {
+                        Log.i(TAG, "读卡失败，错误信息：" + e.getMessage());
+                    }
 
-                        Log.i(TAG, "ret:" + ret);
-                        Log.i("Gavin", "ret:" + ret);
-                        if (ret) {
-                            isReadCard = true;
-                            //mReadCard=false;
-                            //Const.canRead = false;
-                            final long nTickUsed = (System.currentTimeMillis() - begin);
-                            Log.i(TAG, "success>>>" + nTickUsed + ",name:" + idCardInfo.getName() + "," + idCardInfo.getValidityTime() + "��" + idCardInfo.getDepart());
-                            Message msg = new Message();
-                            msg.what = 2;
-                            msg.obj = idCardInfo;
-                            mhandler.sendMessage(msg);
-                        }
+                    Log.i(TAG, "ret:" + ret);
+                    Log.i("Gavin", "ret:" + ret);
+                    if (ret) {
+                        isReadCard = true;
+                        //mReadCard=false;
+                        //Const.canRead = false;
+                        final long nTickUsed = (System.currentTimeMillis() - begin);
+                        Log.i(TAG, "success>>>" + nTickUsed + ",name:" + idCardInfo.getName() + "," + idCardInfo.getValidityTime() + "��" + idCardInfo.getDepart());
+                        Message msg = new Message();
+                        msg.what = 2;
+                        msg.obj = idCardInfo;
+                        mhandler.sendMessage(msg);
                     }
                 }
             }).start();
@@ -221,13 +213,10 @@ public class MainService extends Service {
                             CameraHelp.saveImgToDisk(path, idCardInfo.getId() + ".jpg", cardBmp);
                             AppData.getAppData().setPicName(idCardInfo.getId());
                             final byte[] nv21 = CameraHelp.getNV21(cardBmp.getWidth(), cardBmp.getHeight(), cardBmp);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int socre = FaceIDCardCompareLib.getInstance().faceComperFrame(nv21);
-                                    Log.i("Gavin", "socre:" + socre);
-                                    setAlertConfig(socre, idCardInfo);
-                                }
+                            new Thread(() -> {
+                                int socre = FaceIDCardCompareLib.getInstance().faceComperFrame(nv21);
+                                Log.i("Gavin", "socre:" + socre);
+                                setAlertConfig(socre, idCardInfo);
                             }).start();
                         }
                     } else {
@@ -254,7 +243,10 @@ public class MainService extends Service {
 
     //2.比较是否满足签到或者签退时间
     private void JudgeTime(String currentTime, IDCardInfo idCardInfo) {
-        if (timecompare.TimeCompare(AppData.getAppData().getStarttime(), AppData.getAppData().getInstarttime(), currentTime)) {
+        if (SPUtil.getString(Const.SELECT_COURSE_NAME, "").equals("")) {
+            timeflag = 10;
+            Log.i("Gavin", "未选择课程");
+        } else if (timecompare.TimeCompare(AppData.getAppData().getStarttime(), AppData.getAppData().getInstarttime(), currentTime)) {
             timeflag = 1;
             Log.i("Gavin", "签到时间未到");
         } else if (timecompare.TimeCompare(AppData.getAppData().getInstarttime(), AppData.getAppData().getInendtime(), currentTime)) {
@@ -265,7 +257,7 @@ public class MainService extends Service {
             AppData.getAppData().setCardtype("1");
             AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
-            AppData.getAppData().setClasscode("100735518626680832");
+            AppData.getAppData().setClasscode(SPUtil.getString(Const.SELECT_COURSE_NAME, ""));
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
 
@@ -287,7 +279,7 @@ public class MainService extends Service {
             AppData.getAppData().setCardtype("1");
             AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
-            AppData.getAppData().setClasscode("100735518626680832");
+            AppData.getAppData().setClasscode(SPUtil.getString(Const.SELECT_COURSE_NAME, ""));
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
 

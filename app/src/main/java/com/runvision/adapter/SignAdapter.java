@@ -37,7 +37,7 @@ public class SignAdapter extends ArrayAdapter{
         siginName.setText(sigin.getName());//为文本视图设置文本内容
         siginGender.setText(sigin.getGender());
         siginCardNo.setText(sigin.getCardNo());
-        siginTime.setText(TimeUtils.getYearMonth() + sigin.getSigntime());
+        siginTime.setText(TimeUtils.getYearMonth() + "\t" + sigin.getSigntime());
         return view;
     }
 }

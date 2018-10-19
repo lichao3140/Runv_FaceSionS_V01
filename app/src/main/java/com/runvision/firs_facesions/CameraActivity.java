@@ -18,24 +18,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseSectionQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jzxiang.pickerview.data.Type;
 import com.jzxiang.pickerview.listener.OnDateSetListener;
 import com.mylhyl.circledialog.CircleDialog;
-import com.runvision.adapter.MySectionEntity;
+import com.runvision.adapter.CheckedAdapter;
 import com.runvision.adapter.PictureTypeEntity;
 import com.runvision.adapter.SignAdapter;
 import com.runvision.bean.AppData;
@@ -52,10 +46,8 @@ import com.runvision.utils.SPUtil;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
@@ -65,7 +57,9 @@ import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.MediaType;
 
-
+/**
+ * 学员考勤签到
+ */
 public class CameraActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, OnDateSetListener {
 
@@ -90,7 +84,10 @@ public class CameraActivity extends BaseActivity implements
     private DialogFragment dialogFragment;
     private TimePickerDialog mDialogHourMinute;
     private TimePickerDialog mDialogAll;
+    //时间选择
     private String selectTime;
+    //考勤课程选择
+    private String select_index;
     private int selectId;
 
     private MediaPlayer play;
@@ -123,12 +120,7 @@ public class CameraActivity extends BaseActivity implements
         }
     };
     private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+    private final Runnable mHideRunnable = () -> hide();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +149,7 @@ public class CameraActivity extends BaseActivity implements
         sign_listView = findViewById(R.id.lv_sign);
         sign_listView.setAdapter(signadapter);
 
-        show_card	= findViewById(R.id.show_card);
+        show_card = findViewById(R.id.show_card);
         loadcardText = findViewById(R.id.loadcardText);
         uithread = new UIThread();
         uithread.start();
@@ -165,11 +157,11 @@ public class CameraActivity extends BaseActivity implements
 
     private void initSign() {
         //读取数据库显示签到数据
-        Cursor c=  MainService.getService().helper.getAllTitles();
-        if(c.getCount()==0) {
+        Cursor c = MainService.getService().helper.getAllTitles();
+        if (c.getCount() == 0) {
             signList.clear();
         }
-        if(c.moveToLast()) {
+        if (c.moveToLast()) {
             if (signList != null) {
                 if (signList.size() > 0) {
                     signList.clear();
@@ -247,7 +239,7 @@ public class CameraActivity extends BaseActivity implements
                     showTimeHoursMin();
                     mDialogHourMinute.show(getSupportFragmentManager(), "hour_minute");
                     selectId = list.get(position13).id;
-                    })
+                })
                 .setNegative("取消", null)
                 .show(getSupportFragmentManager());
     }
@@ -347,11 +339,14 @@ public class CameraActivity extends BaseActivity implements
                         } else if (MainService.getService().timeflag == 6) {
                             ShowPromptMessage("不是课堂时间", 6);
                             MainService.getService().timeflag = 0;
-                        }else if (MainService.getService().timeflag == 7) {
+                        } else if (MainService.getService().timeflag == 7) {
                             ShowPromptMessage("无法重复签到", 7);
                             MainService.getService().timeflag = 0;
-                        }else if (MainService.getService().timeflag == 8) {
+                        } else if (MainService.getService().timeflag == 8) {
                             ShowPromptMessage("没有签到信息", 8);
+                            MainService.getService().timeflag = 0;
+                        } else if (MainService.getService().timeflag == 10) {
+                            ShowPromptMessage("未选择课程", 10);
                             MainService.getService().timeflag = 0;
                         }
                         MainService.getService().isCompareSuccess = 0;
@@ -367,32 +362,35 @@ public class CameraActivity extends BaseActivity implements
     };
 
     private void ShowPromptMessage(String showmessage, int audionum) {
-        if(audionum == 1) {
-              play = MediaPlayer.create(context, R.raw.no_sign_time);
-              play.start();
-        } else if(audionum == 2) {
-              play = MediaPlayer.create(context, R.raw.sign_success);
-              play.start();
-        } else if(audionum == 3) {
-              play = MediaPlayer.create(context, R.raw.sign_time_over);
-              play.start();
-        } else if(audionum == 4) {
-              play = MediaPlayer.create(context, R.raw.sign_out_success);
-              play.start();
-        } else if(audionum == 5) {
-              play = MediaPlayer.create(context, R.raw.sign_out_time_over);
-              play.start();
-        } else if(audionum == 6) {
-              play = MediaPlayer.create(context, R.raw.no_cours_time);
-              play.start();
-        } else if(audionum == 7) {
-              play = MediaPlayer.create(context, R.raw.no_agin_sign);
-              play.start();
-        } else if(audionum == 8) {
+        if (audionum == 1) {
+            play = MediaPlayer.create(context, R.raw.no_sign_time);
+            play.start();
+        } else if (audionum == 2) {
+            play = MediaPlayer.create(context, R.raw.sign_success);
+            play.start();
+        } else if (audionum == 3) {
+            play = MediaPlayer.create(context, R.raw.sign_time_over);
+            play.start();
+        } else if (audionum == 4) {
+            play = MediaPlayer.create(context, R.raw.sign_out_success);
+            play.start();
+        } else if (audionum == 5) {
+            play = MediaPlayer.create(context, R.raw.sign_out_time_over);
+            play.start();
+        } else if (audionum == 6) {
+            play = MediaPlayer.create(context, R.raw.no_cours_time);
+            play.start();
+        } else if (audionum == 7) {
+            play = MediaPlayer.create(context, R.raw.no_agin_sign);
+            play.start();
+        } else if (audionum == 8) {
             play = MediaPlayer.create(context, R.raw.no_sign_info);
             play.start();
-        } else if(audionum == 9) {
+        } else if (audionum == 9) {
             play = MediaPlayer.create(context, R.raw.valid_not_pass);
+            play.start();
+        } else if (audionum == 10) {
+            play = MediaPlayer.create(context, R.raw.no_select_coures);
             play.start();
         }
         loadcardText.setText(showmessage);
@@ -409,7 +407,7 @@ public class CameraActivity extends BaseActivity implements
             case 3:
                 AppData.getAppData().setInstarttime(selectTime);
                 Toast.makeText(context, "签到开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
-            break;
+                break;
 
             case 2:
             case 4:
@@ -522,7 +520,7 @@ public class CameraActivity extends BaseActivity implements
                                 AtndResponse gsonAtnd = gson.fromJson(response, AtndResponse.class);
                                 if (gsonAtnd.getErrorcode().equals("0")) {
                                     showInfo(gsonAtnd.getData());
-                                    Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_LONG, true).show();
+                                    Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_SHORT, true).show();
                                 } else {
                                     Toasty.error(context, context.getString(R.string.toast_update_fail), Toast.LENGTH_LONG, true).show();
                                 }
@@ -538,68 +536,30 @@ public class CameraActivity extends BaseActivity implements
 
     private void showInfo(String coursData) {
         try {
-            String[] heads = {"培训科目:第一部分", "培训科目:第四部分"};
             Gson gson = new Gson();
-            List<Cours> coursList = gson.fromJson(coursData, new TypeToken<List<Cours>>(){}.getType());
-            for (Cours cours : coursList) {
-                Log.i("lichao", "coursename:" + cours.getCoursename());
-                Log.i("lichao", "classcode:" + cours.getClasscode());
-                Log.i("lichao", "coursecode:" + cours.getCoursecode());
-                Log.i("lichao", "subject:" + cours.getSubject());
-                Log.i("lichao", "targetlen:" + cours.getTargetlen());
-            }
-            ArrayList<MySectionEntity> listData = new ArrayList<>();
+            List<Cours> coursList = gson.fromJson(coursData, new TypeToken<List<Cours>>() {
+            }.getType());
+            String[] cours_Coursename = new String[coursList.size()];
+
             for (int i = 0; i < coursList.size(); i++) {
-                listData.add(new MySectionEntity(true, coursList.get(i).getClasscode()));
-//                listData.add(new MySectionEntity(new PictureTypeEntity(i, coursList.get(i).getCoursename(),
-//                        coursList.get(i).getClasscode(), coursList.get(i).getCoursecode(), coursList.get(i).getSubject(), coursList.get(i).getTargetlen())));
-
-//                for (int j = 0; j < coursList.size(); j++) {
-//                    Log.i("lichao", "==========" + coursList.get(j).getCoursename());
-//                    listData.add(new MySectionEntity(new PictureTypeEntity(j, heads[i] + "：" + j)));
-////                    listData.add(new MySectionEntity(new PictureTypeEntity(j, coursList.get(j).getCoursename(),
-////                            coursList.get(j).getClasscode(), coursList.get(j).getCoursecode(), coursList.get(j).getSubject(), coursList.get(j).getTargetlen())));
-//                }
+                cours_Coursename[i] = String.valueOf(coursList.get(i).getCoursename());
             }
-            final BaseQuickAdapter rvAdapter = new BaseSectionQuickAdapter<MySectionEntity, BaseViewHolder>(
-                    android.R.layout.simple_list_item_1, R.layout.item_cour, listData) {
 
-                @Override
-                protected void convertHead(BaseViewHolder helper, MySectionEntity item) {
-                    helper.setText(R.id.tv_classcode, item.header);
-//                    helper.setText(R.id.tv_coursecode, item.header);
-//                    helper.setText(R.id.tv_coursename, item.header);
-                }
-
-                @Override
-                protected void convert(BaseViewHolder helper, MySectionEntity item) {
-//                    TextView tv_classcode = helper.getView(R.id.tv_classcode);
-//                    TextView tv_coursecode = helper.getView(R.id.tv_coursecode);
-//                    TextView tv_coursename = helper.getView(R.id.tv_coursename);
-//
-//                    tv_classcode.setText(item.t.classcode);
-//                    tv_coursecode.setText(item.t.coursecode);
-//                    tv_coursename.setText(item.t.coursename);
-                }
-
-            };
-
-            dialogFragment = new CircleDialog.Builder()
-                    .setGravity(Gravity.BOTTOM)
-                    .setRadius(0)
-                    .setWidth(1f)
-                    .setMaxHeight(0.8f)
-                    .setYoff(0)
+            CheckedAdapter checkedAdapterR = new CheckedAdapter(this, cours_Coursename, true);
+            new CircleDialog.Builder()
+                    .configDialog(params -> params.backgroundColorPress = Color.CYAN)
                     .setTitle("考勤参数")
-                    .setItems(rvAdapter, new LinearLayoutManager(context))
-                    .setNegative("关闭", null)
-                    .configNegative(params -> params.topMargin = 0)
+                    .setSubTitle("请选择要考勤的课程")
+                    .setItems(checkedAdapterR, (parent, view15, position15, id) ->
+                            checkedAdapterR.toggle(position15, cours_Coursename[position15]))
+                    .setItemsManualClose(true)
+                    .setPositive("确定", v -> {
+                        select_index = checkedAdapterR.getSaveChecked().toString().substring(1, 2);
+                        SPUtil.putString(Const.SELECT_COURSE_NAME, coursList.get(Integer.parseInt(select_index)).getClasscode());
+                        Toasty.info(context, "选课成功", Toast.LENGTH_SHORT, true).show();
+                    })
                     .show(getSupportFragmentManager());
-            rvAdapter.setOnItemClickListener((adapter1, view14, position14) -> {
-                view14.setBackgroundColor(Color.rgb(213, 0, 0));
-                Toast.makeText(context, "点击的是：" + adapter1.getData().get(position14).toString(), Toast.LENGTH_SHORT).show();
-                //dialogFragment.dismiss();
-            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
