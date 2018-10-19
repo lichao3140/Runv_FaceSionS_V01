@@ -25,6 +25,7 @@ public class AppData {
 
     private String starttime="2018-10-11 08:00:00";//课堂开始时间
     private String endtime="2018-10-19 24:00:00";//课堂关闭时间
+
     private String instarttime="2018-10-11 09:30:00";//签到开始时间
     private String inendtime="2018-10-16 20:30:00";//签到结束时间
     private String outstarttime="2018-10-11 21:10:00";//签退开始时间

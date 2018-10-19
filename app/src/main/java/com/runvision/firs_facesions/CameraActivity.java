@@ -1,6 +1,7 @@
 package com.runvision.firs_facesions;
 
 import android.annotation.SuppressLint;
+import com.jzxiang.pickerview.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,6 +16,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,16 +26,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jzxiang.pickerview.data.Type;
+import com.jzxiang.pickerview.listener.OnDateSetListener;
 import com.mylhyl.circledialog.CircleDialog;
-import com.runvision.HttpCallback.HttpAtndquery;
-import com.runvision.adapter.BaseAdapter;
-import com.runvision.adapter.MenuCardAdapter;
 import com.runvision.adapter.MySectionEntity;
 import com.runvision.adapter.PictureTypeEntity;
 import com.runvision.adapter.SignAdapter;
@@ -52,7 +52,10 @@ import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,7 +66,7 @@ import okhttp3.MediaType;
 
 
 public class CameraActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, OnDateSetListener {
 
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
@@ -84,6 +87,11 @@ public class CameraActivity extends BaseActivity implements
     private UIThread uithread;
     private boolean signoutflag = false;
     private DialogFragment dialogFragment;
+    private TimePickerDialog mDialogAll;
+    private String selectTime;
+    private int selectId;
+
+    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -186,10 +194,9 @@ public class CameraActivity extends BaseActivity implements
         int id = menuItem.getItemId();
         switch (id) {
             case R.id.nav_setting:
-
+                settingTimeDialog();
                 break;
             case R.id.nav_config:
-//                configDialog();
                 Atndquery();
                 break;
             case R.id.nav_sign:
@@ -214,23 +221,52 @@ public class CameraActivity extends BaseActivity implements
         return false;
     }
 
-    /**
-     * 考勤参数
-     */
-    private void configDialog() {
+    private void settingTimeDialog() {
+        final List<PictureTypeEntity> list = new ArrayList<>();
+        list.add(new PictureTypeEntity(1, "签到开始时间:\t"));
+        list.add(new PictureTypeEntity(3,   AppData.getAppData().getInstarttime()));
+        list.add(new PictureTypeEntity(2, "签到结束时间:\t"));
+        list.add(new PictureTypeEntity(4, AppData.getAppData().getInendtime()));
+        list.add(new PictureTypeEntity(5, "签退开始时间:\t"));
+        list.add(new PictureTypeEntity(7,  AppData.getAppData().getOutstarttime()));
+        list.add(new PictureTypeEntity(6, "签退结束时间:\t"));
+        list.add(new PictureTypeEntity(8, AppData.getAppData().getOutendtime()));
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         new CircleDialog.Builder()
-                .setTitle("考勤参数")
-                .setText(
-                        "课堂开始时间(24小时制):"+ AppData.getAppData().getStarttime()+"\r\n"+
-                        "课堂关闭时间(24小时制):"+ AppData.getAppData().getEndtime()+"\n"+
-                        "签到开始时间(24小时制):"+ AppData.getAppData().getInstarttime()+"\n"+
-                        "签到结束时间(24小时制):"+ AppData.getAppData().getInendtime()+"\n"+
-                        "签退开始时间(24小时制):"+ AppData.getAppData().getOutstarttime()+"\n"+
-                        "签退结束时间(24小时制):"+ AppData.getAppData().getOutendtime())
-                .setPositive("更新参数",  v ->
-                                HttpAtndquery.Atndquery(context))
+                .setTitle("考勤时间设置")
+                .configItems(params -> params.dividerHeight = 0)
+                .setItems(list, gridLayoutManager, (view13, position13) -> {
+                    showTimePick();
+                    mDialogAll.show(getSupportFragmentManager(), "all");
+                    selectId = list.get(position13).id;
+                    })
                 .setNegative("取消", null)
                 .show(getSupportFragmentManager());
+    }
+
+    private void showTimePick() {
+        long tenYears = 10L * 365 * 1000 * 60 * 60 * 24L;
+        mDialogAll = new TimePickerDialog.Builder()
+                .setCallBack(this)
+                .setCancelStringId("取消")
+                .setSureStringId("确定")
+                .setTitleStringId("时间选择")
+                .setYearText("年")
+                .setMonthText("月")
+                .setDayText("日")
+                .setHourText("时")
+                .setMinuteText("分")
+                .setCyclic(false)
+                .setMinMillseconds(System.currentTimeMillis())
+                .setMaxMillseconds(System.currentTimeMillis() + tenYears)
+                .setCurrentMillseconds(System.currentTimeMillis())
+                .setThemeColor(getResources().getColor(R.color.timepicker_dialog_bg))
+                .setType(Type.ALL)
+                .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
+                .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
+                .setWheelItemTextSize(18)
+                .build();
     }
 
     @Override
@@ -339,6 +375,37 @@ public class CameraActivity extends BaseActivity implements
         loadcardText.setText(showmessage);
         show_card.setVisibility(View.VISIBLE);
         handler.postDelayed(() -> show_card.setVisibility(View.GONE), 2000);
+    }
+
+    @Override
+    public void onDateSet(TimePickerDialog timePickerView, long millseconds) {
+        selectTime = getDateToString(millseconds);
+        switch (selectId) {
+            case 1:
+            case 3:
+                Toast.makeText(context, "签到开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
+            break;
+
+            case 2:
+            case 4:
+                Toast.makeText(context, "签到结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
+                break;
+
+            case 5:
+            case 7:
+                Toast.makeText(context, "签退开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
+                break;
+
+            case 6:
+            case 8:
+                Toast.makeText(context, "签退结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public String getDateToString(long time) {
+        Date d = new Date(time);
+        return sf.format(d);
     }
 
     private class UIThread extends Thread {
