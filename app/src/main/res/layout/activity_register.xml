@@ -148,8 +148,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:maxLength="2"
-            android:hint="请输入两位经度"
+            android:hint="请输入经度"
             android:textSize="16dp" />
 
         <TextView
@@ -164,8 +163,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:maxLength="2"
-            android:hint="请输入两位纬度"
+            android:hint="请输入纬度"
             android:textSize="16dp" />
     </LinearLayout>
 
