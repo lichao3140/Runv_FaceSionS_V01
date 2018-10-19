@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -91,6 +92,8 @@ public class CameraActivity extends BaseActivity implements
     private TimePickerDialog mDialogAll;
     private String selectTime;
     private int selectId;
+
+    private MediaPlayer play;
 
     SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -211,7 +214,7 @@ public class CameraActivity extends BaseActivity implements
                 new CircleDialog.Builder()
                         .setTitle("技术支持")
                         .setText("深圳市元视科技有限公司")
-                        .setPositive("确定",  null)
+                        .setPositive("确定", null)
                         .show(getSupportFragmentManager());
                 break;
             default:
@@ -222,6 +225,9 @@ public class CameraActivity extends BaseActivity implements
         return false;
     }
 
+    /**
+     * 考勤时间设置
+     */
     private void settingTimeDialog() {
         final List<PictureTypeEntity> list = new ArrayList<>();
         list.add(new PictureTypeEntity(1, "签到开始时间:\t"));
@@ -238,7 +244,7 @@ public class CameraActivity extends BaseActivity implements
                 .setTitle("考勤时间设置")
                 .configItems(params -> params.dividerHeight = 0)
                 .setItems(list, gridLayoutManager, (view13, position13) -> {
-                    showTimeHoursMins();
+                    showTimeHoursMin();
                     mDialogHourMinute.show(getSupportFragmentManager(), "hour_minute");
                     selectId = list.get(position13).id;
                     })
@@ -246,7 +252,10 @@ public class CameraActivity extends BaseActivity implements
                 .show(getSupportFragmentManager());
     }
 
-    private void showTimeHoursMins() {
+    /**
+     * 时分
+     */
+    private void showTimeHoursMin() {
         mDialogHourMinute = new TimePickerDialog.Builder()
                 .setTitleStringId("选择时间")
                 .setType(Type.HOURS_MINS)
@@ -254,6 +263,9 @@ public class CameraActivity extends BaseActivity implements
                 .build();
     }
 
+    /**
+     * 年月日时分
+     */
     private void showTimePick() {
         long tenYears = 10L * 365 * 1000 * 60 * 60 * 24L;
         mDialogAll = new TimePickerDialog.Builder()
@@ -317,7 +329,6 @@ public class CameraActivity extends BaseActivity implements
                             MainService.getService().timeflag = 0;
                         } else if (MainService.getService().timeflag == 2) {
                             initSign();
-                            Log.i("Gavin","跑几次");
                             sign_listView.setAdapter(signadapter);//刷新列表
                             ShowPromptMessage("签到成功", 2);
                             MainService.getService().timeflag = 0;
@@ -345,7 +356,7 @@ public class CameraActivity extends BaseActivity implements
                         }
                         MainService.getService().isCompareSuccess = 0;
                     } else if (MainService.getService().isCompareSuccess == 2) {//比对失败
-                        ShowPromptMessage("比对不通过", 7);
+                        ShowPromptMessage("比对不通过", 9);
                         MainService.getService().isCompareSuccess = 0;
                     }
                     break;
@@ -355,31 +366,34 @@ public class CameraActivity extends BaseActivity implements
         }
     };
 
-    private void ShowPromptMessage(String showmessage,int audionum) {
-        if(audionum==0) {
-            //  play = MediaPlayer.create(mcontext, R.raw.faceup);
-            //  play.start();
-        } else if(audionum==1) {
-            //  play = MediaPlayer.create(mcontext, R.raw.template);
-            //  play.start();
-        } else if(audionum==2) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
-        } else if(audionum==3) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
-        } else if(audionum==4) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
-        } else if(audionum==5) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
-        } else if(audionum==6) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
-        } else if(audionum==7) {
-            //  play = MediaPlayer.create(mcontext, R.raw.cardid);
-            //  play.start();
+    private void ShowPromptMessage(String showmessage, int audionum) {
+        if(audionum == 1) {
+              play = MediaPlayer.create(context, R.raw.no_sign_time);
+              play.start();
+        } else if(audionum == 2) {
+              play = MediaPlayer.create(context, R.raw.sign_success);
+              play.start();
+        } else if(audionum == 3) {
+              play = MediaPlayer.create(context, R.raw.sign_time_over);
+              play.start();
+        } else if(audionum == 4) {
+              play = MediaPlayer.create(context, R.raw.sign_out_success);
+              play.start();
+        } else if(audionum == 5) {
+              play = MediaPlayer.create(context, R.raw.sign_out_time_over);
+              play.start();
+        } else if(audionum == 6) {
+              play = MediaPlayer.create(context, R.raw.no_cours_time);
+              play.start();
+        } else if(audionum == 7) {
+              play = MediaPlayer.create(context, R.raw.no_agin_sign);
+              play.start();
+        } else if(audionum == 8) {
+            play = MediaPlayer.create(context, R.raw.no_sign_info);
+            play.start();
+        } else if(audionum == 9) {
+            play = MediaPlayer.create(context, R.raw.valid_not_pass);
+            play.start();
         }
         loadcardText.setText(showmessage);
         show_card.setVisibility(View.VISIBLE);

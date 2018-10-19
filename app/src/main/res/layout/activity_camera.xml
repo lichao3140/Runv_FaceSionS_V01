@@ -48,7 +48,7 @@
                 android:id="@+id/lv_sign"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@color/olive"/>
+                android:background="@color/white"/>
 
         </LinearLayout>
     </FrameLayout>

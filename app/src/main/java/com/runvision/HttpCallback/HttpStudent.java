@@ -66,8 +66,11 @@ public class HttpStudent {
                                 Gson gson = new Gson();
                                 LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                                 if (gsonLogin.getErrorcode() == 0) {
-
-                                    Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_LONG, true).show();
+                                    if (gsonLogin.getMessage().equals("操作成功")) {
+                                        Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_SHORT, true).show();
+                                    } else {
+                                        Toasty.warning(context, context.getString(R.string.toast_update_fail) + gsonLogin.getMessage(), Toast.LENGTH_LONG, true).show();
+                                    }
                                 } else {
                                     Toasty.error(context, context.getString(R.string.toast_update_fail), Toast.LENGTH_LONG, true).show();
                                 }
@@ -124,8 +127,11 @@ public class HttpStudent {
                                 Gson gson = new Gson();
                                 LoginResponse gsonLogin = gson.fromJson(response, LoginResponse.class);
                                 if (gsonLogin.getErrorcode() == 0) {
-
-                                    Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_LONG, true).show();
+                                    if (gsonLogin.getMessage().equals("操作成功")) {
+                                        Toasty.success(context, context.getString(R.string.toast_update_success), Toast.LENGTH_SHORT, true).show();
+                                    } else {
+                                        Toasty.error(context, context.getString(R.string.toast_update_fail) + gsonLogin.getMessage(), Toast.LENGTH_LONG, true).show();
+                                    }
                                 } else {
                                     Toasty.error(context, context.getString(R.string.toast_update_fail), Toast.LENGTH_LONG, true).show();
                                 }

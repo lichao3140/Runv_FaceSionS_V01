@@ -23,7 +23,7 @@ public class AppData {
 
     private String timestamp;//时间戳
 
-    private String starttime="08:00:00";//课堂开始时间
+    private String starttime= "08:00:00";//课堂开始时间
     private String endtime="24:00:00";//课堂关闭时间
 
     private String instarttime="09:30:00";//签到开始时间

@@ -2,43 +2,28 @@ package com.runvision.firs_facesions;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-import com.runvision.bean.AppData;
 import com.runvision.bean.FaceVerifyResponse;
 import com.runvision.bean.Login;
 import com.runvision.core.Const;
 import com.runvision.myview.FaceFrameView;
 import com.runvision.myview.MyCameraSuf;
-import com.runvision.utils.FileUtils;
 import com.runvision.utils.RSAUtils;
 import com.runvision.utils.SPUtil;
-import com.runvision.utils.SharedPreferencesHelper;
 import com.runvision.utils.TimeUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
+import android_serialport_api.SerialPort;
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.MediaType;
-
 import static com.runvision.core.Const.oneVsMoreFlag;
 
 /**
@@ -54,6 +39,7 @@ public class FaceActivity extends BaseActivity {
 
     private UIThread uithread;
     Gson gson = new Gson();
+    private int timingnum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +62,18 @@ public class FaceActivity extends BaseActivity {
                     if(oneVsMoreFlag == true) {
                         oneVsMoreFlag = false;
                         adminLogin();
+                    }
+                    if (SerialPort.Fill_in_light == false) {
+                                SerialPort.openLED();
+                            }
+
+                    if (SerialPort.Fill_in_light == true) {   //补光灯
+                        timingnum++;
+                        if (timingnum >= 100) {
+                            Log.i("zhuhuilong", "Fill_in_light:" + SerialPort.Fill_in_light);
+                            SerialPort.Fill_in_light = false;
+                            timingnum = 0;
+                        }
                     }
                     break;
             }

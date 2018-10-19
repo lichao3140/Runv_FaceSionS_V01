@@ -69,4 +69,11 @@ public class TimeUtils {
         return str;
     }
 
+    public static String getCurrentTime(){
+        SimpleDateFormat formatter   =  new  SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());
+        String str = formatter.format(curDate);
+        return str;
+    }
+
 }

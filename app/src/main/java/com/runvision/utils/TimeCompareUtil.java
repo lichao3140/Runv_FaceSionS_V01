@@ -10,7 +10,7 @@ public class TimeCompareUtil {
     //获取当前系统时间
     private Date currentTime = null;//currentTime就是系统当前时间
     //定义时间的格式
-    private DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DateFormat fmt = new SimpleDateFormat("HH:mm");
     private Date strbeginDate = null;//起始时间
     private Date strendDate = null;//结束时间
     private boolean range = false;
@@ -34,7 +34,7 @@ public class TimeCompareUtil {
     }
 
     public static String getSystemTime() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");// HH:mm:ss
         //获取当前时间
         Date date = new Date(System.currentTimeMillis());
         String currentTime = simpleDateFormat.format(date);

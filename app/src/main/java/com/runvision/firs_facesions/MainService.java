@@ -44,6 +44,8 @@ import com.zkteco.android.biometric.module.idcard.meta.IDCardInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+import android_serialport_api.SerialPort;
+
 public class MainService extends Service {
 
     private String TAG = "MainService";
@@ -121,6 +123,9 @@ public class MainService extends Service {
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         Toast.makeText(mContext, "读卡器授权成功", Toast.LENGTH_SHORT).show();
                         readCard();
+                         if (SerialPort.Fill_in_light == false) {
+                           SerialPort.openLED();
+                         }
                     } else {
                         Toast.makeText(mContext, "USB未授权", Toast.LENGTH_SHORT).show();
                     }
@@ -264,7 +269,7 @@ public class MainService extends Service {
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
 
-            HttpStudent.Stulogin(mContext, AppData.getAppData().getDevnum(), AppData.getAppData().getTime(), AppData.getAppData().getStucode(),
+            HttpStudent.Stulogin(mContext, AppData.getAppData().getDevnum(), TimeUtils.getCurrentTime(), AppData.getAppData().getStucode(),
                     AppData.getAppData().getCardtype(), AppData.getAppData().getGps(), AppData.getAppData().getImgstr(),
                     AppData.getAppData().getClasscode(), AppData.getAppData().getSn(), AppData.getAppData().getStudentName());
 
@@ -286,7 +291,7 @@ public class MainService extends Service {
             AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
             AppData.getAppData().setStudentName(idCardInfo.getName());
 
-            HttpStudent.Stulogout(mContext, AppData.getAppData().getDevnum(), AppData.getAppData().getTime(), AppData.getAppData().getStucode(),
+            HttpStudent.Stulogout(mContext, AppData.getAppData().getDevnum(), TimeUtils.getCurrentTime(), AppData.getAppData().getStucode(),
             AppData.getAppData().getCardtype(), AppData.getAppData().getGps(), AppData.getAppData().getImgstr(),
             AppData.getAppData().getClasscode(), AppData.getAppData().getSn(), 0, AppData.getAppData().getStudentName());
 
