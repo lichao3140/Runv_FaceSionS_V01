@@ -62,4 +62,11 @@ public class TimeUtils {
         return times;
     }
 
+    public static String getYearMonth(){
+        SimpleDateFormat formatter   =  new  SimpleDateFormat("yyyy-MM-dd");
+        Date curDate = new Date(System.currentTimeMillis());
+        String str = formatter.format(curDate);
+        return str;
+    }
+
 }

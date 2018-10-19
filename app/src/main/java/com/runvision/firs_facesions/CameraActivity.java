@@ -87,6 +87,7 @@ public class CameraActivity extends BaseActivity implements
     private UIThread uithread;
     private boolean signoutflag = false;
     private DialogFragment dialogFragment;
+    private TimePickerDialog mDialogHourMinute;
     private TimePickerDialog mDialogAll;
     private String selectTime;
     private int selectId;
@@ -224,25 +225,33 @@ public class CameraActivity extends BaseActivity implements
     private void settingTimeDialog() {
         final List<PictureTypeEntity> list = new ArrayList<>();
         list.add(new PictureTypeEntity(1, "签到开始时间:\t"));
-        list.add(new PictureTypeEntity(3,   AppData.getAppData().getInstarttime()));
+        list.add(new PictureTypeEntity(3, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInstarttime()));
         list.add(new PictureTypeEntity(2, "签到结束时间:\t"));
-        list.add(new PictureTypeEntity(4, AppData.getAppData().getInendtime()));
+        list.add(new PictureTypeEntity(4, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInendtime()));
         list.add(new PictureTypeEntity(5, "签退开始时间:\t"));
-        list.add(new PictureTypeEntity(7,  AppData.getAppData().getOutstarttime()));
+        list.add(new PictureTypeEntity(7, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutstarttime()));
         list.add(new PictureTypeEntity(6, "签退结束时间:\t"));
-        list.add(new PictureTypeEntity(8, AppData.getAppData().getOutendtime()));
+        list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutendtime()));
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         new CircleDialog.Builder()
                 .setTitle("考勤时间设置")
                 .configItems(params -> params.dividerHeight = 0)
                 .setItems(list, gridLayoutManager, (view13, position13) -> {
-                    showTimePick();
-                    mDialogAll.show(getSupportFragmentManager(), "all");
+                    showTimeHoursMins();
+                    mDialogHourMinute.show(getSupportFragmentManager(), "hour_minute");
                     selectId = list.get(position13).id;
                     })
                 .setNegative("取消", null)
                 .show(getSupportFragmentManager());
+    }
+
+    private void showTimeHoursMins() {
+        mDialogHourMinute = new TimePickerDialog.Builder()
+                .setTitleStringId("选择时间")
+                .setType(Type.HOURS_MINS)
+                .setCallBack(this)
+                .build();
     }
 
     private void showTimePick() {
@@ -262,7 +271,7 @@ public class CameraActivity extends BaseActivity implements
                 .setMaxMillseconds(System.currentTimeMillis() + tenYears)
                 .setCurrentMillseconds(System.currentTimeMillis())
                 .setThemeColor(getResources().getColor(R.color.timepicker_dialog_bg))
-                .setType(Type.ALL)
+                .setType(Type.HOURS_MINS)
                 .setWheelItemTextNormalColor(getResources().getColor(R.color.timetimepicker_default_text_color))
                 .setWheelItemTextSelectorColor(getResources().getColor(R.color.timepicker_toolbar_bg))
                 .setWheelItemTextSize(18)
@@ -379,25 +388,30 @@ public class CameraActivity extends BaseActivity implements
 
     @Override
     public void onDateSet(TimePickerDialog timePickerView, long millseconds) {
-        selectTime = getDateToString(millseconds);
+        selectTime = getDateToString(millseconds).substring(11, 19);
+
         switch (selectId) {
             case 1:
             case 3:
+                AppData.getAppData().setInstarttime(selectTime);
                 Toast.makeText(context, "签到开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
             break;
 
             case 2:
             case 4:
+                AppData.getAppData().setInendtime(selectTime);
                 Toast.makeText(context, "签到结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
 
             case 5:
             case 7:
+                AppData.getAppData().setOutstarttime(selectTime);
                 Toast.makeText(context, "签退开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
 
             case 6:
             case 8:
+                AppData.getAppData().setOutendtime(selectTime);
                 Toast.makeText(context, "签退结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
         }
