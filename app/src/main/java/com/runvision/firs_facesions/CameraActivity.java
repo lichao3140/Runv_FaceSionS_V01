@@ -222,14 +222,34 @@ public class CameraActivity extends BaseActivity implements
      */
     private void settingTimeDialog() {
         final List<PictureTypeEntity> list = new ArrayList<>();
+
         list.add(new PictureTypeEntity(1, "签到开始时间:\t"));
-        list.add(new PictureTypeEntity(3, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInstarttime()));
+        if (SPUtil.getString(Const.TIME_SIGN_BEGIN, "").equals("")) {
+            list.add(new PictureTypeEntity(3, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInstarttime()));
+        } else {
+            list.add(new PictureTypeEntity(3, TimeUtils.getYearMonth() + "\t" + SPUtil.getString(Const.TIME_SIGN_BEGIN, "")));
+        }
+
         list.add(new PictureTypeEntity(2, "签到结束时间:\t"));
-        list.add(new PictureTypeEntity(4, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInendtime()));
+        if (SPUtil.getString(Const.TIME_SIGN_END, "").equals("")) {
+            list.add(new PictureTypeEntity(4, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getInendtime()));
+        } else {
+            list.add(new PictureTypeEntity(4, TimeUtils.getYearMonth() + "\t" + SPUtil.getString(Const.TIME_SIGN_END, "")));
+        }
+
         list.add(new PictureTypeEntity(5, "签退开始时间:\t"));
-        list.add(new PictureTypeEntity(7, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutstarttime()));
+        if (SPUtil.getString(Const.TIME_SIGN_OUT_BEGIN, "").equals("")) {
+            list.add(new PictureTypeEntity(7, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutstarttime()));
+        } else {
+            list.add(new PictureTypeEntity(7, TimeUtils.getYearMonth() + "\t" + SPUtil.getString(Const.TIME_SIGN_OUT_BEGIN, "")));
+        }
+
         list.add(new PictureTypeEntity(6, "签退结束时间:\t"));
-        list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutendtime()));
+        if (SPUtil.getString(Const.TIME_SIGN_OUT_BEGIN, "").equals("")) {
+            list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutendtime()));
+        } else {
+            list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + SPUtil.getString(Const.TIME_SIGN_OUT_END, "")));
+        }
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         new CircleDialog.Builder()
@@ -317,6 +337,7 @@ public class CameraActivity extends BaseActivity implements
                 case Const.UPDATE_UI:
                     if (MainService.getService().isCompareSuccess == 1) {//比对成功
                         if (MainService.getService().timeflag == 1) {
+
                             ShowPromptMessage("签到时间未到", 1);
                             MainService.getService().timeflag = 0;
                         } else if (MainService.getService().timeflag == 2) {
@@ -406,24 +427,28 @@ public class CameraActivity extends BaseActivity implements
             case 1:
             case 3:
                 AppData.getAppData().setInstarttime(selectTime);
+                SPUtil.putString(Const.TIME_SIGN_BEGIN, selectTime);
                 Toast.makeText(context, "签到开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
 
             case 2:
             case 4:
                 AppData.getAppData().setInendtime(selectTime);
+                SPUtil.putString(Const.TIME_SIGN_END, selectTime);
                 Toast.makeText(context, "签到结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
 
             case 5:
             case 7:
                 AppData.getAppData().setOutstarttime(selectTime);
+                SPUtil.putString(Const.TIME_SIGN_OUT_BEGIN, selectTime);
                 Toast.makeText(context, "签退开始时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
 
             case 6:
             case 8:
                 AppData.getAppData().setOutendtime(selectTime);
+                SPUtil.putString(Const.TIME_SIGN_OUT_END, selectTime);
                 Toast.makeText(context, "签退结束时间:" + selectTime, Toast.LENGTH_SHORT).show();
                 break;
         }

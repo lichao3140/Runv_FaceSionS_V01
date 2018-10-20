@@ -48,6 +48,10 @@ public class Const {
     public static String DEV_NUM = "devnum";
     public static String DEV_GPS = "gps";
     public static String SELECT_COURSE_NAME = "select_course_name";
+    public static String TIME_SIGN_BEGIN = "time_sign_begin";
+    public static String TIME_SIGN_END = "time_sign_end";
+    public static String TIME_SIGN_OUT_BEGIN = "time_sign_out_begin";
+    public static String TIME_SIGN_OUT_END = "time_sign_out_end";
 
     public static String CARD_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Card/";
     public static String FACE_PATH= Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/";

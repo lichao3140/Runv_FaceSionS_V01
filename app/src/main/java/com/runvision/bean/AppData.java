@@ -24,12 +24,12 @@ public class AppData {
     private String timestamp;//时间戳
 
     private String starttime= "08:00:00";//课堂开始时间
-    private String endtime="24:00:00";//课堂关闭时间
+    private String endtime="18:00:00";//课堂关闭时间
 
-    private String instarttime="09:30:00";//签到开始时间
-    private String inendtime="20:30:00";//签到结束时间
-    private String outstarttime="21:10:00";//签退开始时间
-    private String outendtime="22:30:00";//签退结束时间
+    private String instarttime="08:00:00";//签到开始时间
+    private String inendtime="12:00:00";//签到结束时间
+    private String outstarttime="14:00:00";//签退开始时间
+    private String outendtime="18:00:00";//签退结束时间
     private int interval;//签到间隔(秒)
 
     private String cardtype;//证件类型
