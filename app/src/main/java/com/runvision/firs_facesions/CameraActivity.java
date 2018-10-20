@@ -572,16 +572,19 @@ public class CameraActivity extends BaseActivity implements
 
             CheckedAdapter checkedAdapterR = new CheckedAdapter(this, cours_Coursename, true);
             new CircleDialog.Builder()
-                    .configDialog(params -> params.backgroundColorPress = Color.CYAN)
+                    .configDialog(params ->
+                            params.backgroundColorPress = Color.CYAN)
                     .setTitle("考勤参数")
                     .setSubTitle("请选择要考勤的课程")
                     .setItems(checkedAdapterR, (parent, view15, position15, id) ->
                             checkedAdapterR.toggle(position15, cours_Coursename[position15]))
                     .setItemsManualClose(true)
                     .setPositive("确定", v -> {
-                        select_index = checkedAdapterR.getSaveChecked().toString().substring(1, 2);
-                        SPUtil.putString(Const.SELECT_COURSE_NAME, coursList.get(Integer.parseInt(select_index)).getClasscode());
-                        Toasty.info(context, "选课成功", Toast.LENGTH_SHORT, true).show();
+                        if (!checkedAdapterR.getSaveChecked().toString().equals("{}")) {
+                            select_index = checkedAdapterR.getSaveChecked().toString().substring(1, 2);
+                            SPUtil.putString(Const.SELECT_COURSE_NAME, coursList.get(Integer.parseInt(select_index)).getClasscode());
+                            Toasty.info(context, "选课成功", Toast.LENGTH_SHORT, true).show();
+                        }
                     })
                     .show(getSupportFragmentManager());
 
