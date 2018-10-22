@@ -9,7 +9,7 @@ android {
             //keystore中key的密码
             keyPassword 'lichao'
             //keystore的文件路径，可以是绝对路径也可以是相对路径
-            storeFile file('F:/mywork/android_key.jks')
+            storeFile file('src/main/assets/android_key.jks')
             //keystore的密码
             storePassword 'lichao'
         }
