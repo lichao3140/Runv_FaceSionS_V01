@@ -2,6 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
+    signingConfigs {
+        debug {
+            //keystore中key的别名
+            keyAlias 'key0'
+            //keystore中key的密码
+            keyPassword 'lichao'
+            //keystore的文件路径，可以是绝对路径也可以是相对路径
+            storeFile file('F:/mywork/android_key.jks')
+            //keystore的密码
+            storePassword 'lichao'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.runvision.firs_facesions"
@@ -49,6 +61,7 @@ dependencies {
     implementation 'ch.halcyon:squareprogressbar:1.6.4'
     implementation 'com.github.ybq:Android-SpinKit:1.0.5'
     implementation 'com.jzxiang.pickerview:TimePickerDialog:1.0.1'
+    implementation 'com.amap.api:location:4.3.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

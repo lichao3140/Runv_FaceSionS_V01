@@ -8,7 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.runvision.core.MyApplication;
-import com.runvision.firs_facesions.MainActivity;
+import com.runvision.firs_facesions.CameraActivity;
 import com.runvision.utils.LogToFile;
 
 public class UnCeHandler implements Thread.UncaughtExceptionHandler {
@@ -36,7 +36,7 @@ public class UnCeHandler implements Thread.UncaughtExceptionHandler {
             } catch (InterruptedException e) {
                 Log.e(TAG, "error : ", e);
             }
-            Intent intent = new Intent(application.getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(application.getApplicationContext(), CameraActivity.class);
             AlarmManager mAlarmManager = (AlarmManager) application
                     .getSystemService(Context.ALARM_SERVICE);
             PendingIntent restartIntent = PendingIntent.getActivity(application.getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
