@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.runvision.bean.Device;
 import com.runvision.bean.DeviceResponse;
 import com.runvision.core.Const;
-import com.runvision.utils.LocationUtils;
 import com.runvision.utils.MACUtil;
 import com.runvision.utils.SPUtil;
 import com.runvision.utils.TimeUtils;
@@ -52,10 +51,9 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.bt_location)
     Button btLocation;
 
-
+    //高德地图定位
     private AMapLocationClient locationClient = null;
     private AMapLocationClientOption locationOption = null;
-    public Location location;
     private Context mContext;
     Gson gson = new Gson();
 
@@ -66,13 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = this;
         //初始化定位
-        //初始化定位
         initLocation();
-        location = LocationUtils.getInstance(mContext).showLocation();
-        if (location != null) {
-            String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
-            Log.i("lichao", "address:" + address);
-        }
         initData();
     }
 
@@ -201,10 +193,8 @@ public class RegisterActivity extends AppCompatActivity {
                 sb.append("纬    度    : " + location.getLatitude() + "\n");
                 sb.append("精    度    : " + location.getAccuracy() + "米" + "\n");
                 sb.append("提供者    : " + location.getProvider() + "\n");
-
                 sb.append("速    度    : " + location.getSpeed() + "米/秒" + "\n");
                 sb.append("角    度    : " + location.getBearing() + "\n");
-                // 获取当前提供定位服务的卫星个数
                 sb.append("星    数    : " + location.getSatellites() + "\n");
                 sb.append("国    家    : " + location.getCountry() + "\n");
                 sb.append("省            : " + location.getProvince() + "\n");
@@ -214,18 +204,21 @@ public class RegisterActivity extends AppCompatActivity {
                 sb.append("区域 码   : " + location.getAdCode() + "\n");
                 sb.append("地    址    : " + location.getAddress() + "\n");
                 sb.append("兴趣点    : " + location.getPoiName() + "\n");
+                etGpsLon.setText(location.getLongitude() + "");
+                etGpsLat.setText(location.getLatitude() + "");
             } else {
                 //定位失败
                 sb.append("定位失败" + "\n");
                 sb.append("错误码:" + location.getErrorCode() + "\n");
                 sb.append("错误信息:" + location.getErrorInfo() + "\n");
                 sb.append("错误描述:" + location.getLocationDetail() + "\n");
+                Toasty.error(mContext, "定位失败," + location.getErrorInfo(), Toast.LENGTH_LONG, true).show();
             }
             //解析定位结果
             String result = sb.toString();
             Log.i("lichao", "解析定位结果:" + result);
         } else {
-            Log.i("lichao", "定位失败，loc is null");
+            Toasty.error(mContext, "定位失败,loc is null", Toast.LENGTH_LONG, true).show();
         }
     };
 
@@ -241,6 +234,5 @@ public class RegisterActivity extends AppCompatActivity {
             locationClient = null;
             locationOption = null;
         }
-        LocationUtils.getInstance(mContext).removeLocationUpdatesListener();
     }
 }
