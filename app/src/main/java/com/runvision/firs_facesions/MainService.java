@@ -22,6 +22,7 @@ import com.runvision.bean.AppData;
 import com.runvision.core.Const;
 import com.runvision.core.DBAdapter;
 import com.runvision.core.FaceIDCardCompareLib;
+import com.runvision.core.MyApplication;
 import com.runvision.utils.CameraHelp;
 import com.runvision.utils.LogToFile;
 import com.runvision.utils.SPUtil;
@@ -59,7 +60,9 @@ public class MainService extends Service {
     private Context mContext;
     private TimeCompareUtil timecompare;
     public int timeflag = 0;
+    public String stu_sn = null;
     public DBAdapter helper;
+    public Cursor cursor;
 
     public static MainService getService() {
         return myService;
@@ -78,6 +81,7 @@ public class MainService extends Service {
 
         mContext = this;
         myService = this;
+        stu_sn = UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13();
         startIDCardReader();
         RequestDevicePermission();
         helper = new DBAdapter(this);
@@ -258,7 +262,7 @@ public class MainService extends Service {
             AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
             AppData.getAppData().setClasscode(SPUtil.getString(Const.SELECT_COURSE_NAME, ""));
-            AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
+            AppData.getAppData().setSn(stu_sn);
             AppData.getAppData().setStudentName(idCardInfo.getName());
 
             HttpStudent.Stulogin(mContext, AppData.getAppData().getDevnum(), TimeUtils.getCurrentTime(), AppData.getAppData().getStucode(),
@@ -280,7 +284,7 @@ public class MainService extends Service {
             AppData.getAppData().setGps(SPUtil.getString(Const.DEV_GPS, ""));
             AppData.getAppData().setImgstr(CameraHelp.bitmapToBase64(CameraHelp.getSmallBitmap(Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg")));
             AppData.getAppData().setClasscode(SPUtil.getString(Const.SELECT_COURSE_NAME, ""));
-            AppData.getAppData().setSn(UUIDUtil.getUniqueID(mContext) + TimeUtils.getTime13());
+            AppData.getAppData().setSn(querySN(idCardInfo));
             AppData.getAppData().setStudentName(idCardInfo.getName());
 
             HttpStudent.Stulogout(mContext, AppData.getAppData().getDevnum(), TimeUtils.getCurrentTime(), AppData.getAppData().getStucode(),
@@ -308,8 +312,6 @@ public class MainService extends Service {
         } else {
             AddCursor(idCardInfo, currentTime);//签到成功
         }
-        //给平台发送签到报文
-
     }
 
     //需要删除签到信息
@@ -363,26 +365,54 @@ public class MainService extends Service {
     /////////////////////////////////////////////////////////////////////向数据库添加数据
     private void AddCursor(IDCardInfo idCardInfo, String currentTime) {
 
-        Cursor c = helper.getAllTitles();
+        cursor = helper.getAllTitles();
         helper.insertTitle(idCardInfo.getName(),
                 idCardInfo.getSex(),
                 idCardInfo.getId(),
                 Environment.getExternalStorageDirectory() + "/FaceAndroid/Face/" + idCardInfo.getId() + ".jpg",
                 Environment.getExternalStorageDirectory() + "/FaceAndroid/card/" + idCardInfo.getId() + ".jpg",
-                currentTime);
+                currentTime,
+                stu_sn);
 
-        if (c.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
-                if (c != null) {
-                    Log.i("Gavin", "姓名：" + c.getString(1) +
-                            "性别：" + c.getString(2) +
-                            "身份证号：" + c.getString(3) +
-                            "脸地址：" + c.getString(4) +
-                            "证地址：" + c.getString(5) +
-                            "签到时间：" + c.getString(6));
+                if (cursor != null) {
+                    Log.i("Gavin", "姓名：" + cursor.getString(1) +
+                            "性别：" + cursor.getString(2) +
+                            "身份证号：" + cursor.getString(3) +
+                            "脸地址：" + cursor.getString(4) +
+                            "证地址：" + cursor.getString(5) +
+                            "签到时间：" + cursor.getString(6)+
+                            "sn：" + cursor.getString(7));
                 }
 
-            } while (c.moveToNext());
+            } while (cursor.moveToNext());
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////向数据库查询SN
+    private String querySN(IDCardInfo idCardInfo) {
+
+        String sn=null;
+        cursor = helper.getAllTitles();
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor != null) {
+                    if(idCardInfo.getId().equals(cursor.getString(3)))
+                    {
+                        sn = cursor.getString(7);
+                    }
+                    Log.i("Gavin", "姓名：" + cursor.getString(1) +
+                            "性别：" + cursor.getString(2) +
+                            "身份证号：" + cursor.getString(3) +
+                            "脸地址：" + cursor.getString(4) +
+                            "证地址：" + cursor.getString(5) +
+                            "签到时间：" + cursor.getString(6)+
+                            "sn：" + cursor.getString(7));
+                }
+
+            } while (cursor.moveToNext());
+        }
+        return sn;
     }
 }

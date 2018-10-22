@@ -24,6 +24,7 @@ public class DBAdapter
     public static final String KEY_FACEPIC="facepic";      //人证对比图片     4
     public static final String KEY_IDCARDPIC="idcardpic";   //身份证图片        5
     public static final String KEY_SIGN_IN ="sign_in";//签到时间
+    public static final String KEY_SN ="sn";//签到时间
     
     public static final String TAG="DBAdapter";
 
@@ -49,7 +50,9 @@ public class DBAdapter
 
             + "idcardpic String,"
 
-            + "sign_in String)";
+            + "sign_in String,"
+
+            +"sn String)";
 
 
 
@@ -101,7 +104,7 @@ public class DBAdapter
 
 
 
-    public long insertTitle(String name,String gender,String id_card,String facepic,String idcardpic,String sign_in)//向数据库中插入一个标题
+    public long insertTitle(String name,String gender,String id_card,String facepic,String idcardpic,String sign_in,String sn)//向数据库中插入一个标题
     {
         ContentValues inittialValues = new ContentValues();
 
@@ -111,6 +114,7 @@ public class DBAdapter
         inittialValues.put(KEY_FACEPIC,facepic);
         inittialValues.put(KEY_IDCARDPIC,idcardpic);
         inittialValues.put(KEY_SIGN_IN,sign_in);
+        inittialValues.put(KEY_SN,sn);
         
         return db.insert(DATABASE_TABLE,null,inittialValues);
     }
@@ -130,7 +134,8 @@ public class DBAdapter
                         KEY_ID_CARD,
                         KEY_FACEPIC,
                         KEY_IDCARDPIC,
-                        KEY_SIGN_IN
+                        KEY_SIGN_IN,
+                        KEY_SN
                 },
                 null,
                 null,
@@ -165,6 +170,7 @@ public class DBAdapter
                  KEY_FACEPIC,
                  KEY_IDCARDPIC,
                  KEY_SIGN_IN,
+                 KEY_SN
                 },
                 KEY_ROWID + "=" + rowId,
                 null,
@@ -206,7 +212,7 @@ public class DBAdapter
         return mCursor;
 
     }*/
-    public boolean updateTitle(String rowId,String name, String gender, String idcard, String facepic, String idcardpic,String sign_in)//更新一个标题
+    public boolean updateTitle(String rowId,String name, String gender, String idcard, String facepic, String idcardpic,String sign_in,String sn)//更新一个标题
     {
         ContentValues args = new ContentValues();
         args.put(KEY_NAME,name);
@@ -215,6 +221,7 @@ public class DBAdapter
         args.put(KEY_FACEPIC,facepic);
         args.put(KEY_IDCARDPIC,idcardpic);
         args.put(KEY_SIGN_IN,sign_in);
+        args.put(KEY_SN,sn);
         return db.update(DATABASE_TABLE,args,KEY_ROWID + "=" + rowId,null)>0;
     }
 
