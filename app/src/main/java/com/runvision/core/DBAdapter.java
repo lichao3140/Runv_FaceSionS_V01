@@ -68,7 +68,7 @@ public class DBAdapter
 
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
-        public DatabaseHelper(Context context) {//鏋勯�犲嚱鏁�,鎺ユ敹涓婁笅鏂囦綔涓哄弬鏁�,鐩存帴璋冪敤鐨勭埗绫荤殑鏋勯�犲嚱鏁�
+        public DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 

@@ -245,7 +245,7 @@ public class CameraActivity extends BaseActivity implements
         }
 
         list.add(new PictureTypeEntity(6, "签退结束时间:\t"));
-        if (SPUtil.getString(Const.TIME_SIGN_OUT_BEGIN, "").equals("")) {
+        if (SPUtil.getString(Const.TIME_SIGN_OUT_END, "").equals("")) {
             list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + AppData.getAppData().getOutendtime()));
         } else {
             list.add(new PictureTypeEntity(8, TimeUtils.getYearMonth() + "\t" + SPUtil.getString(Const.TIME_SIGN_OUT_END, "")));
